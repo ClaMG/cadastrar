@@ -1,0 +1,229 @@
+/* ---------------------------------------------------- */
+/* ESTILOS GLOBAIS E FUNDO */
+/* ---------------------------------------------------- */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Fundo degradê escuro com efeito "nebuloso" */
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    margin: 0;
+    min-height: 100vh;
+    padding-top: 50px; /* Espaço para não encostar na borda superior */
+}
+
+/* Título Principal */
+h1 {
+    color: #f0f0f0;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------------------------------------------------- */
+/* CONTAINER PRINCIPAL E ESTRUTURA */
+/* ---------------------------------------------------- */
+
+.container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 30px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Container para agrupar inputs dentro do formulário */
+form .containerSon {
+    display: flex;
+    gap: 15px;
+    /* Faz os inputs quebrarem a linha e ocuparem 100% em telas pequenas */
+    flex-wrap: wrap; 
+    justify-content: space-between;
+}
+
+/* Otimização para que os inputs ocupem espaço de forma inteligente */
+form .containerSon input {
+    /* Em telas maiores, 3 inputs por linha ficam bem distribuídos */
+    flex: 1 1 30%; 
+    min-width: 150px; /* Garante que não fiquem muito pequenos */
+}
+
+/* ---------------------------------------------------- */
+/* FORMULÁRIO DE CADASTRO */
+/* ---------------------------------------------------- */
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Ajustei o gap */
+    padding: 35px;
+    border-radius: 12px;
+    /* Azul escuro com transparência elegante */
+    background-color: rgba(25, 45, 95, 0.95); 
+    max-width: 800px; /* Aumentei o max-width para acomodar bem os inputs */
+    width: 100%;
+    margin-bottom: 40px;
+    /* Sombra elegante e borda sutil */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease;
+}
+
+form:focus-within {
+    transform: translateY(-5px);
+    /* Sombra mais intensa no foco com destaque azul */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 0 3px #8A96FF; 
+}
+
+form input {
+    border: 1px solid #8A96FF;
+    border-radius: 20px;
+    height: 45px;
+    /* Fundo escuro levemente transparente */
+    background-color: rgba(4, 32, 124, 0.85); 
+    color: #fff;
+    font-size: 1rem;
+    padding: 0 15px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+form input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+form input:focus {
+    border-color: #f0f0f0;
+    background-color: rgba(4, 32, 124, 1);
+    box-shadow: 0 0 5px #8A96FF;
+}
+
+form button {
+    border-radius: 20px;
+    background-color: #8A96FF;
+    height: 45px;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #1a1a1a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+form button:hover {
+    background-color: #6a77e8;
+    transform: translateY(-2px);
+}
+
+/* ---------------------------------------------------- */
+/* CARDS DE INFORMAÇÃO */
+/* ---------------------------------------------------- */
+
+.card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0c337b;
+    margin: 10px 0;
+    padding: 15px 20px;
+    width: 100%;
+    max-width: 800px; /* Alinhado com o tamanho máximo do formulário */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.01); /* Efeito de leve aumento no hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
+}
+    
+.card > div:first-child {
+    /* Estilos para o container de textos (Id, User, Nome...) */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 colunas para melhor visualização */
+    gap: 5px 20px;
+    flex-grow: 1;
+}
+
+@media (max-width: 600px) {
+    .card > div:first-child {
+        grid-template-columns: 1fr; /* Em telas menores, 1 coluna */
+    }
+}
+
+.card p {
+    font-weight: 500;
+    color: #f0f0f0;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.card p span {
+    font-weight: 300;
+    color: #c0c0c0;
+    margin-left: 5px;
+}
+
+.card .containerbtn {
+    display: flex;
+    flex-direction: column; /* Coloquei os botões em coluna para economizar espaço */
+    gap: 15px;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.card .containerbtn button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+}
+
+.card .containerbtn button:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+
+.card .containerbtn .img {
+    width: 30px; 
+    height: 30px;
+    filter: drop-shadow(0 0 1px #fff);
+}
+
+/* ---------------------------------------------------- */
+/* RESPONSIVIDADE GERAL */
+/* ---------------------------------------------------- */
+
+@media (max-width: 850px) {
+    form {
+        padding: 25px;
+    }
+    
+    /* Em telas menores que 850px, o form .containerSon já fará os inputs quebrar a linha */
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    form .containerSon {
+        gap: 10px;
+    }
+
+    .card {
+        flex-direction: column; /* Card empilha conteúdo em telas muito pequenas */
+        align-items: flex-start;
+    }
+
+    .card .containerbtn {
+        flex-direction: row; /* Botões lado a lado no card em mobile */
+        margin-top: 15px;
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
