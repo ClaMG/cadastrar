@@ -2,14 +2,6 @@
 /* ESTILOS GLOBAIS E FUNDO */
 /* ---------------------------------------------------- */
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* Fundo degradê escuro com efeito "nebuloso" */
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    margin: 0;
-    min-height: 100vh;
-    padding-top: 50px; /* Espaço para não encostar na borda superior */
-}
 
 /* Título Principal */
 h1 {
@@ -64,9 +56,14 @@ form {
     max-width: 800px; /* Aumentei o max-width para acomodar bem os inputs */
     width: 100%;
     margin-bottom: 40px;
+    margin-top: 20px;
     /* Sombra elegante e borda sutil */
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(255, 255, 255, 0.1);
     transition: transform 0.3s ease;
+}
+
+#update{
+    display: none;
 }
 
 form:focus-within {
@@ -138,7 +135,7 @@ form button:hover {
     transform: scale(1.01); /* Efeito de leve aumento no hover */
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
 }
-    
+
 .card > div:first-child {
     /* Estilos para o container de textos (Id, User, Nome...) */
     display: grid;

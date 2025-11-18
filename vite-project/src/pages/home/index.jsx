@@ -3,14 +3,21 @@ import './style.css'
 import Imagedelet from "../../assets/delete.svg"
 import Imageupdate from "../../assets/edit.svg"
 import api from '../../services/api'
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom"; 
+
 
 
 
 function Home() {
   const [users, setUsers] = useState([])//adicionar automaticamente na tela
   
+  const inputUpId = useRef()
+  const inputUpUser = useRef()
+  const inputUpSenha = useRef()
+  const inputUpNome = useRef()
+  const inputUpIdade = useRef()
+  const inputUpCPF = useRef()
+  const inputUpTelefone = useRef()
+  const inputUpEmail = useRef()
   const inputUser = useRef()
   const inputSenha = useRef()
   const inputNome = useRef()
@@ -40,7 +47,18 @@ function Home() {
       email: inputEmail.current.value
     })//Envia para api
 
+    
     getUsers()
+
+    if (inputUser.current) inputUser.current.value = '';
+    if (inputSenha.current) inputSenha.current.value = '';
+    if (inputNome.current) inputNome.current.value = '';
+    if (inputIdade.current) inputIdade.current.value = '';
+    if (inputCPF.current) inputCPF.current.value = '';
+    if (inputTelefone.current) inputTelefone.current.value = '';
+    if (inputEmail.current) inputEmail.current.value = '';
+
+
     
   }
 
@@ -48,6 +66,40 @@ function Home() {
     await api.delete(`/user/${id}`)
 
     getUsers()
+  }
+
+  async function putUsers() {
+    const userFromApi = await api.put('/user',{
+      id: inputUpId.current.value,
+      usuario: inputUpUser.current.value,
+      senha: inputUpSenha.current.value,
+      nome: inputUpNome.current.value,
+      idade: inputUpIdade.current.value,
+      cpf: inputUpCPF.current.value,
+      telefone: inputUpTelefone.current.value,
+      email: inputUpEmail.current.value
+    })//Envia para api
+
+    getUsers()
+
+    if (inputUpId.current) inputUpId.current.value = '';
+    if (inputUpUser.current) inputUpUser.current.value = '';
+    if (inputUpSenha.current) inputUpSenha.current.value = '';
+    if (inputUpNome.current) inputUpNome.current.value = '';
+    if (inputUpIdade.current) inputUpIdade.current.value = '';
+    if (inputUpCPF.current) inputUpCPF.current.value = '';
+    if (inputUpTelefone.current) inputUpTelefone.current.value = '';
+    if (inputUpEmail.current) inputUpEmail.current.value = '';
+
+    document.getElementById("update").style.display = "none";
+    
+  }
+
+  async function enviarId(id) {
+    inputUpId.current.value = id;
+    document.getElementById("update").style.display = "flex";
+
+    
   }
 
   useEffect(()=>{
@@ -80,24 +132,43 @@ function Home() {
           <div key={user.id} className='card'>
               <div>
                 <p>Id: <span>{user.id}</span></p>
-                <p>User: <span>{user.usuario}</span></p>
-                <p>Senha: <span>{user.senha}</span></p>
-                <p>Nome: <span>{user.nome}</span></p>
                 <p>Idade: <span>{user.idade}</span></p>
+                <p>User: <span>{user.usuario}</span></p>
                 <p>CPF: <span>{user.cpf}</span></p>
+                <p>Senha: <span>{user.senha}</span></p>
                 <p>Telefone: <span>{user.telefone}</span></p>
+                <p>Nome: <span>{user.nome}</span></p>
                 <p>E-mail: <span>{user.email}</span></p>
               </div>
               <div className='containerbtn'>
                 <button onClick={() => deletUsers(user.id)}>
                     <img src={Imagedelet} className='img'/>
                 </button>
-                <button onClick={() =>update(user.id)}>
+                <button onClick={() => enviarId(user.id)}>
                     <img src={Imageupdate} className='img'/>
                 </button>
               </div>
             </div>
           ))}
+
+          <form action="" id='update'>
+            <h1>Atualizar</h1>
+            
+            <div className='containerSon'>
+            <input placeholder='Id' name="Id" type='number'ref={inputUpId}/>
+            <input placeholder='User' name="User" type='text'ref={inputUpUser}/>
+            <input placeholder='Senha' name="Senha" type='password'ref={inputUpSenha}/>
+            <input placeholder='Nome' name="Nome" type='text'ref={inputUpNome}/>
+            </div>
+            <div className='containerSon'>
+            <input placeholder='Idade' name="Idade" type='number' ref={inputUpIdade}/>
+            <input placeholder='CPF' name="CPF" type='text' ref={inputUpCPF}/>
+            <input placeholder='Telefone' name="Telefone" type='text' ref={inputUpTelefone}/>
+            <input placeholder='E-mail' name="Email" type='email' ref={inputUpEmail}/>
+            </div>
+            <button type='button' onClick={putUsers}>Atualizar</button>
+            
+          </form>
           
       </div>
       
