@@ -45,7 +45,7 @@ form .containerSon input {
 /* FORMULÁRIO DE CADASTRO */
 /* ---------------------------------------------------- */
 
-form {
+form, .containerpesquisa {
     display: flex;
     flex-direction: column;
     gap: 25px; /* Ajustei o gap */
@@ -62,17 +62,21 @@ form {
     transition: transform 0.3s ease;
 }
 
+.containerpesquisa{
+    flex-direction: row;
+}
+
 #update{
     display: none;
 }
 
-form:focus-within {
+form:focus-within, .containerpesquisa:focus-within {
     transform: translateY(-5px);
     /* Sombra mais intensa no foco com destaque azul */
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 0 3px #8A96FF; 
 }
 
-form input {
+form input, .containerpesquisa input {
     border: 1px solid #8A96FF;
     border-radius: 20px;
     height: 45px;
@@ -85,17 +89,21 @@ form input {
     transition: all 0.3s ease;
 }
 
-form input::placeholder {
+.containerpesquisa input{
+    width: 100%;
+}
+
+form input::placeholder, .containerpesquisa input::placeholder {
     color: rgba(255, 255, 255, 0.6);
 }
 
-form input:focus {
+form input:focus, .containerpesquisa input:focus {
     border-color: #f0f0f0;
     background-color: rgba(4, 32, 124, 1);
     box-shadow: 0 0 5px #8A96FF;
 }
 
-form button {
+form button, .containerpesquisa button {
     border-radius: 20px;
     background-color: #8A96FF;
     height: 45px;
@@ -108,6 +116,12 @@ form button {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+.containerpesquisa button{
+    width: 55px;
+    height: 50px;
+    border-radius: 30px;
+}
+
 form button:hover {
     background-color: #6a77e8;
     transform: translateY(-2px);
@@ -117,7 +131,7 @@ form button:hover {
 /* CARDS DE INFORMAÇÃO */
 /* ---------------------------------------------------- */
 
-.card {
+.card, #todos {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -130,6 +144,7 @@ form button:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 
 .card:hover {
     transform: scale(1.01); /* Efeito de leve aumento no hover */
@@ -166,7 +181,7 @@ form button:hover {
 .card .containerbtn {
     display: flex;
     flex-direction: column; /* Coloquei os botões em coluna para economizar espaço */
-    gap: 15px;
+    gap: 20px;
     align-items: center;
     margin-left: 20px;
 }
@@ -184,7 +199,7 @@ form button:hover {
     transform: scale(1.1);
 }
 
-.card .containerbtn .img {
+.img {
     width: 30px; 
     height: 30px;
     filter: drop-shadow(0 0 1px #fff);

@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from 'react'
 import './style.css'
 import Imagedelet from "../../assets/delete.svg"
 import Imageupdate from "../../assets/edit.svg"
+import Imagelupa from "../../assets/lupa.svg"
+import ImageX from "../../assets/lupa.svg"
 import api from '../../services/api'
 
 
@@ -9,7 +11,9 @@ import api from '../../services/api'
 
 function Home() {
   const [users, setUsers] = useState([])//adicionar automaticamente na tela
+  const [filteredUsers, setFilteredUsers] = useState([])//para filtrar
   
+  const inputPesquisarId = useRef()
   const inputUpId = useRef()
   const inputUpUser = useRef()
   const inputUpSenha = useRef()
@@ -29,11 +33,8 @@ function Home() {
   async function getUsers(){
     const userFromApi = await api.get('/users')//puxa da api
     setUsers(userFromApi.data)//adicionar automaticamente na tela
+    setFilteredUsers(userFromApi.data)
 
-  }
-  
-  async function update(id) {
-    window.location.href = `/update/${id}`; 
   }
 
   async function postUsers() {
@@ -96,9 +97,13 @@ function Home() {
   }
 
   async function enviarId(id) {
-    inputUpId.current.value = id;
-    document.getElementById("update").style.display = "flex";
+     inputUpId.current.value = id;
+      document.getElementById("update").style.display = "flex";
 
+    
+  }
+
+  async function getIdUser(id) {
     
   }
 
@@ -110,6 +115,7 @@ function Home() {
   return (
     <>
       <div className='container'>
+
           <form action="">
             <h1>Cadastro</h1>
             
@@ -128,8 +134,22 @@ function Home() {
             
           </form>
 
+          <form action=""  className='containerpesquisa'>
+            <input placeholder='Id de pesquisa' name="id" type='number'ref={inputPesquisarId}/>
+            <div className='containerbtn'>
+              <button onClick={()=> getIdUser(inputPesquisarId)}>
+                      <img src={Imagelupa} className='img'/>
+              </button>
+              <button onClick={getUsers}>
+                      <img src={ImageX} className='img'/>
+              </button>
+            </div>
+          </form>
+
+          
+
           { users.map((user) => (
-          <div key={user.id} className='card'>
+          <div key={user.id} className='card' id='todos'>
               <div>
                 <p>Id: <span>{user.id}</span></p>
                 <p>Idade: <span>{user.idade}</span></p>
@@ -148,8 +168,9 @@ function Home() {
                     <img src={Imageupdate} className='img'/>
                 </button>
               </div>
-            </div>
+          </div>
           ))}
+          
 
           <form action="" id='update'>
             <h1>Atualizar</h1>

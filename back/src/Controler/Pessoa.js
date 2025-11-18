@@ -58,7 +58,7 @@ export async function selectUsuarios(req, res){
 
 export async function selectUsuario(req, res){
     try{
-        let id = req.body.id;
+        let id = req.params.id;
             openDb().then(db=>{
             db.get('SELECT * FROM Usuarios WHERE id = ?', [id])
             .then(user=>res.json(user));
