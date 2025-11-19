@@ -56,15 +56,28 @@ export async function selectUsuarios(req, res){
     }
 }
 
-export async function selectUsuario(req, res){
-    try{
-        let id = req.params.id;
-            openDb().then(db=>{
-            db.get('SELECT * FROM Usuarios WHERE id = ?', [id])
-            .then(user=>res.json(user));
-        });
-    }catch(err){
-        console.log(mensagem= "Erro ao selecionar usuários: " + err.message);
+export async function selectUsuario(req, res) {
+    let id = req.params.id;
+
+    try {
+      
+        const db = await openDb(); 
+
+        const user = await db.get('SELECT * FROM Usuarios WHERE id = ?', [id]);
+        
+        
+        if (user) {
+            
+            res.json(user);
+        } else {
+        
+            res.status(404).json({ message: "Usuário não encontrado." });
+        }
+
+    } catch (err) {
+        console.error("Erro ao selecionar usuário:", err.message);
+        
+        res.status(500).json({ message: "Erro interno do servidor ao buscar usuário." });
     }
 }
 

@@ -3,7 +3,7 @@ import './style.css'
 import Imagedelet from "../../assets/delete.svg"
 import Imageupdate from "../../assets/edit.svg"
 import Imagelupa from "../../assets/lupa.svg"
-import ImageX from "../../assets/lupa.svg"
+import ImageX from "../../assets/x.svg"
 import api from '../../services/api'
 
 
@@ -34,7 +34,6 @@ function Home() {
     const userFromApi = await api.get('/users')//puxa da api
     setUsers(userFromApi.data)//adicionar automaticamente na tela
     setFilteredUsers(userFromApi.data)
-
   }
 
   async function postUsers() {
@@ -59,14 +58,13 @@ function Home() {
     if (inputTelefone.current) inputTelefone.current.value = '';
     if (inputEmail.current) inputEmail.current.value = '';
 
-
-    
   }
 
   async function deletUsers(id) {
     await api.delete(`/user/${id}`)
 
     getUsers()
+    if (inputPesquisarId.current) inputPesquisarId.current.value = '';
   }
 
   async function putUsers() {
@@ -96,19 +94,52 @@ function Home() {
     
   }
 
-  async function enviarId(id) {
-     inputUpId.current.value = id;
-      document.getElementById("update").style.display = "flex";
+  async function close() {
+    document.getElementById("update").style.display = "none";
+  }
 
-    
+  async function enviarId(id) {
+    inputUpId.current.value = id;
+    document.getElementById("update").style.display = "flex";
   }
 
   async function getIdUser(id) {
+    if(id == 0 || id == null ){
+      document.getElementById("update").style.display = "none";
+      getUsers() 
+    } else {
+      document.getElementById("update").style.display = "none";
+      const userFromApi = await api.get(`/user/${id}`) 
+      setFilteredUsers([userFromApi.data]) 
+      if(userFromApi == null || userFromApi == ""){
+        getIdUser()
+      }else{
+        document.getElementById("todos").style.display = "none";
+      }
+    }
+
+
+  }
+
+  async function iniciar() {
+    document.getElementById("update").style.display = "none";
+
+
+    const input = document.getElementsByClassName('numero');
+
+    input.addEventListener('keydown', function(event) {
+      const regex = /[a-zA-Z]/;
     
+      // Verifica se o caractere digitado é uma letra
+      if (regex.test(event.key)) {
+        event.preventDefault(); // Bloqueia a inserção da letra
+      }
+    });
   }
 
   useEffect(()=>{
     getUsers()
+    iniciar()
   }, [])//executa a função quando carrega a tela
 
 
@@ -123,32 +154,27 @@ function Home() {
             <input placeholder='User' name="User" type='text'ref={inputUser}/>
             <input placeholder='Senha' name="Senha" type='password'ref={inputSenha}/>
             <input placeholder='Nome' name="Nome" type='text'ref={inputNome}/>
-            <input placeholder='Idade' name="Idade" type='number' ref={inputIdade}/>
+            <input placeholder='Idade' name="Idade" type='text' ref={inputIdade} maxlength="2" className='numero'/>
             </div>
             <div className='containerSon'>
-            <input placeholder='CPF' name="CPF" type='text' ref={inputCPF}/>
-            <input placeholder='Telefone' name="Telefone" type='text' ref={inputTelefone}/>
+            <input placeholder='CPF' name="CPF" type='text' ref={inputCPF} maxlength="11" className='numero'/>
+            <input placeholder='Telefone' name="Telefone" ref={inputTelefone} maxlength="9" className='numero'/>
             <input placeholder='E-mail' name="Email" type='email' ref={inputEmail}/>
             </div>
             <button type='button' onClick={postUsers}>Cadastrar</button>
             
           </form>
 
-          <form action=""  className='containerpesquisa'>
-            <input placeholder='Id de pesquisa' name="id" type='number'ref={inputPesquisarId}/>
-            <div className='containerbtn'>
-              <button onClick={()=> getIdUser(inputPesquisarId)}>
+          <form action=""  className='containerpesquisa' onSubmit={(e) => e.preventDefault()}>
+            <input placeholder='Id de pesquisa' name="id_pesquisa" type='search' ref={inputPesquisarId} className='numero'/>
+            <div className='containerbtnPesquisa'>
+              <button onClick={() => {getIdUser(inputPesquisarId.current.value);}}>
                       <img src={Imagelupa} className='img'/>
-              </button>
-              <button onClick={getUsers}>
-                      <img src={ImageX} className='img'/>
               </button>
             </div>
           </form>
 
-          
-
-          { users.map((user) => (
+          { filteredUsers.map((user) => ( 
           <div key={user.id} className='card' id='todos'>
               <div>
                 <p>Id: <span>{user.id}</span></p>
@@ -173,18 +199,23 @@ function Home() {
           
 
           <form action="" id='update'>
-            <h1>Atualizar</h1>
+            <div className='containertitle'>
+              <h1>Atualizar</h1>
+              <button onClick={close}>
+                <img src={ImageX} className='img'/>
+              </button>
+            </div>
             
             <div className='containerSon'>
-            <input placeholder='Id' name="Id" type='number'ref={inputUpId}/>
+            <input placeholder='Id' name="Id" type='text'ref={inputUpId} className='numero'/>
             <input placeholder='User' name="User" type='text'ref={inputUpUser}/>
             <input placeholder='Senha' name="Senha" type='password'ref={inputUpSenha}/>
             <input placeholder='Nome' name="Nome" type='text'ref={inputUpNome}/>
             </div>
             <div className='containerSon'>
-            <input placeholder='Idade' name="Idade" type='number' ref={inputUpIdade}/>
-            <input placeholder='CPF' name="CPF" type='text' ref={inputUpCPF}/>
-            <input placeholder='Telefone' name="Telefone" type='text' ref={inputUpTelefone}/>
+            <input placeholder='Idade' name="Idade" type='text' ref={inputUpIdade} maxlength="2" className='numero'/>
+            <input placeholder='CPF' name="CPF" type='text' ref={inputUpCPF} maxlength="11"className='numero'/>
+            <input placeholder='Telefone' name="Telefone" type='text' ref={inputUpTelefone} maxlength="9" className='numero'/>
             <input placeholder='E-mail' name="Email" type='email' ref={inputUpEmail}/>
             </div>
             <button type='button' onClick={putUsers}>Atualizar</button>
