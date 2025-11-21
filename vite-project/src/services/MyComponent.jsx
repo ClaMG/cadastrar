@@ -11,10 +11,15 @@
         navigate('/users');
       };
 
+      const goToPush = () => {
+        navigate('/register');
+      };
+
       return (
         <>
         <button onClick={goToCreate}>Ir para home</button>
         <button onClick={goToGet}>Ir para Users</button>
+        <button onClick={goToPush}>Ir para Cadastrar</button>
         </>
       );
     }

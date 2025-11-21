@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import './style.css'
+import '../../css/global.css'
 import Imagedelet from "../../assets/delete.svg"
 import Imageupdate from "../../assets/edit.svg"
 import Imagelupa from "../../assets/lupa.svg"
@@ -33,10 +33,31 @@ function Home(){
     }
   }
 
-
+  async function iniciar() {
+    //Para não permitir letras nos inputs de números
+    const inputs = document.getElementsByClassName('numero');
+    inputs.addEventListener('keydown', function(event) {
+        if (
+            event.key === 'Backspace' ||
+            event.key === 'Delete' ||
+            event.key === 'Tab' ||
+            event.key.includes('Arrow')
+        ) {
+            return;
+        }
+        
+        const regex = /[a-zA-Z]/;
+        
+        if (regex.test(event.key)) {
+            event.preventDefault(); 
+        }
+    });
+    
+}
 
   useEffect(()=>{
     getUsers()
+    iniciar()
   }, [])//executa a função quando carrega a tela
 
   return(

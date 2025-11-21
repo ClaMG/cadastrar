@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import './style.css'
+import '../../css/global.css'
 import Imagedelet from "../../assets/delete.svg"
 import Imageupdate from "../../assets/edit.svg"
 import Imagelupa from "../../assets/lupa.svg"
@@ -125,16 +125,26 @@ function Home() {
     document.getElementById("update").style.display = "none";
 
 
-    const input = document.getElementsByClassName('numero');
+    const inputs = document.getElementsByClassName('numero');
 
-    input.addEventListener('keydown', function(event) {
-      const regex = /[a-zA-Z]/;
-    
-      // Verifica se o caractere digitado é uma letra
-      if (regex.test(event.key)) {
-        event.preventDefault(); // Bloqueia a inserção da letra
-      }
-    });
+    for (let i = 0; i < inputs.length; i++) {
+        const input = inputs[i]; 
+        input.addEventListener('keydown', function(event) {
+            if (
+                event.key === 'Backspace' ||
+                event.key === 'Delete' ||
+                event.key === 'Tab' ||
+                event.key.includes('Arrow')
+            ) {
+                return; 
+            }
+            
+            const regex = /[a-zA-Z]/;
+            if (regex.test(event.key)) {
+                event.preventDefault();
+            }
+        });
+    }
   }
 
   useEffect(()=>{
