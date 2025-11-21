@@ -5,6 +5,7 @@
     import HomeScreen from '../pages/home/index';
     import RegisterScreen from '../pages/cadastro/cadastrar';
     import UpdateScreen from '../pages/atualizar/update';
+    import LoginScreen from '../pages/login/login';
 
     function App() {
       return (
@@ -12,6 +13,7 @@
           <Routes>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/users" element={<UsersScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
             <Route path="/atualizar/:id" element={<UpdateScreen />} />
           </Routes>

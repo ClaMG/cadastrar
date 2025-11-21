@@ -102,13 +102,13 @@ export async function deleteUsuario(req, res){
 }
 
 
-async function getUserByUsername(username) {
+async function getUserByUsername(usuario) {
 
     try{
         const db = await openDb();
         
         const query = 'SELECT id, senha FROM Usuarios WHERE usuario = ?'; //Filtra pelo usuario na tabela
-        const user = await db.get(query, [username]); //diz qual o usuario
+        const user = await db.get(query, [usuario]); //diz qual o usuario
         
         await db.close();//fecha a conexão com o banco de dados
         return user;//retorna o usuario encontrado
@@ -120,24 +120,17 @@ async function getUserByUsername(username) {
 
 export async function logar(req, res){
     const secretKey = process.env.JWT_SECRET || 'secretayour_super_secret_key_here';
-    const {username, password} = req.body;
+    const {usuario, senha} = req.body;
     
-    const user = await getUserByUsername(username); //usa a função e manda o usuario para verificação
+    const user = await getUserByUsername(usuario); //usa a função e manda o usuario para verificação
 
-    //verifica usuario
+    //verifica usuario e senha
 
-    if (!user) {
-        return res.status(401).json({message: 'Credenciais inválidas'});
-    }
-
-    //verifica senha
-
-    const passwordMatch = user.senha === password;
-    
-    if (!passwordMatch) {
+    if (!user || !user.senha === senha) {
         return res.status(401).json({message: 'Credenciais inválidas'});
     }
     
+
     if (!secretKey) {
         console.error('JWT_SECRET not defined in .env');
         return res.status(500).json({message: 'Erro interno do servidor' });
@@ -147,6 +140,8 @@ export async function logar(req, res){
 
     const token = jwt.sign(payload, secretKey, {expiresIn: '1h'});//cria o token
     res.json({token});
+
+    
 }
 
 export async function autorizarUser(req, res){
