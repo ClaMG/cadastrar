@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef } from 'react'
+import { useNavigate } from 'react-router-dom';
 import '../../css/global.css'
 import Imagedelet from "../../assets/delete.svg"
 import Imageupdate from "../../assets/edit.svg"
 import Imagelupa from "../../assets/lupa.svg"
+import Imageback from "../../assets/back.svg"
 import api from '../../services/api'
 
 
@@ -10,8 +12,9 @@ function Home(){
     const [users, setUsers] = useState([])//adicionar automaticamente na tela
     const [filteredUsers, setFilteredUsers] = useState([])//para filtrar
     const inputPesquisarId = useRef()
+    const navigate = useNavigate();
 
-    async function getUsers(){
+  async function getUsers(){
     const userFromApi = await api.get('/users')//puxa da api
     setUsers(userFromApi.data)//adicionar automaticamente na tela
     setFilteredUsers(userFromApi.data)
@@ -32,7 +35,7 @@ function Home(){
       setFilteredUsers([userFromApi.data]) 
     }
   }
-
+    
   async function iniciar() {
     //Para não permitir letras nos inputs de números
     const inputs = document.getElementsByClassName('numero');
@@ -55,6 +58,15 @@ function Home(){
     
 }
 
+  async function goToUpdate(id) {
+    navigate(`/atualizar/${id}`);
+  }
+
+   async function goToBack() {
+    navigate(`/`);
+  }
+
+
   useEffect(()=>{
     getUsers()
     iniciar()
@@ -62,6 +74,13 @@ function Home(){
 
   return(
     <><div className='container'>
+        <div className='containertitle' id='userstitle'>
+            <h1>Usuarios</h1>
+            <button onClick={goToBack}>
+                <img src={Imageback} className='img rodar' />
+            </button>
+        </div>
+
         <form action=""  className='containerpesquisa' onSubmit={(e) => e.preventDefault()}>
             <input placeholder='Id de pesquisa' name="id_pesquisa" type='search' ref={inputPesquisarId} className='numero'/>
             <div className='containerbtnPesquisa'>
@@ -87,7 +106,7 @@ function Home(){
                 <button onClick={() => deletUsers(user.id)}>
                     <img src={Imagedelet} className='img'/>
                 </button>
-                <button>
+                <button onClick={() => goToUpdate(user.id)}>
                     <img src={Imageupdate} className='img'/>
                 </button>
                 </div>

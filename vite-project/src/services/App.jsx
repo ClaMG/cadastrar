@@ -1,18 +1,19 @@
     // App.js
     import { BrowserRouter, Routes, Route } from 'react-router-dom';
-    import Home from '../pages/home/index';
-    import HomeScreen from '../pages/get/home';
-    import RegisterScreen from '../pages/cadastrar/cadastrar';
-    import MyComponent from '../services/MyComponent'; // Assuming MyComponent is in MyComponent.js
+    import Home from '../pages/completo/index';//Tudo em uma página só
+    import UsersScreen from '../pages/usuarios/users';
+    import HomeScreen from '../pages/home/index';
+    import RegisterScreen from '../pages/cadastro/cadastrar';
+    import UpdateScreen from '../pages/atualizar/update';
 
     function App() {
       return (
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<MyComponent />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/users" element={<HomeScreen />} />
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/users" element={<UsersScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
+            <Route path="/atualizar/:id" element={<UpdateScreen />} />
           </Routes>
         </BrowserRouter>
       );

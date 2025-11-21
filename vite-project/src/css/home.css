@@ -1,0 +1,119 @@
+/* Importação de um arquivo global se você estiver usando um */
+/* @import './variaveis.css'; */
+
+/* Se estiver em modo escuro */
+:root {
+    /* Cores (Modo Escuro) - APENAS COMO REFERÊNCIA, use suas vars globais */
+    --primary-color: #4A90E2; 
+    --primary-hover: #6a77e8; 
+    --text-dark: #f8f9fa;
+    --bg-main: #121212; 
+    --bg-surface: #1e1e1e;
+    --border-radius: 8px;
+    --shadow-subtle: 0 4px 10px rgba(0, 0, 0, 0.5); 
+}
+
+
+/* ---------------------------------------------------- */
+/* ESTRUTURA E CENTRALIZAÇÃO */
+/* ---------------------------------------------------- */
+
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    /* Ocupa a altura total da viewport (ajuste se necessário com base no seu layout principal) */
+    min-height: 100vh; 
+    
+    background-color: var(--bg-main);
+    padding: 20px;
+    text-align: center;
+}
+
+.home-container h1 {
+    color: var(--primary-color);
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.home-container p {
+    color: var(--text-dark);
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+/* Contêiner dos Botões */
+.home-buttons {
+    display: flex;
+    gap: 20px; /* Espaço entre os botões */
+    flex-wrap: wrap; /* Para responsividade */
+    justify-content: center;
+    max-width: 600px;
+    width: 100%;
+}
+
+/* ---------------------------------------------------- */
+/* ESTILO DOS BOTÕES */
+/* ---------------------------------------------------- */
+
+.home-btn {
+    flex-grow: 1; /* Permite que os botões se expandam */
+    min-width: 200px; /* Largura mínima para botões grandes */
+
+    /* Estilo Base */
+    padding: 15px 30px;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-subtle);
+}
+
+/* Botão Padrão (Ir para Usuários) */
+.home-btn {
+    background-color: var(--bg-surface);
+    color: var(--text-dark);
+    border: 2px solid var(--primary-color); /* Borda de destaque */
+}
+
+.home-btn:hover {
+    background-color: #333333; /* Um pouco mais claro no hover */
+    transform: translateY(-2px);
+    border-color: var(--primary-hover);
+}
+
+/* Botão Principal (Ir para Cadastro) - Destacado */
+.home-btn.primary {
+    background-color: var(--primary-color);
+    color: var(--text-light, #121212); /* Garante que o texto seja escuro no fundo azul */
+    border: 2px solid var(--primary-color);
+}
+
+.home-btn.primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
+}
+
+
+/* ---------------------------------------------------- */
+/* RESPONSIVIDADE */
+/* ---------------------------------------------------- */
+
+@media (max-width: 500px) {
+    .home-buttons {
+        /* Empilha os botões em telas menores */
+        flex-direction: column;
+    }
+    
+    .home-btn {
+        min-width: 100%;
+    }
+
+    .home-container h1 {
+        font-size: 2.5rem;
+    }
+}

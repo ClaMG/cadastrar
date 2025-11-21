@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import Imageback from "../../assets/back.svg"
 import '../../css/global.css'
 import api from '../../services/api'
 
@@ -12,6 +14,7 @@ function Cadastrar() {
   const inputCPF = useRef()
   const inputTelefone = useRef()
   const inputEmail = useRef() 
+  const navigate = useNavigate();
   
   
   async function postUsers() {
@@ -43,6 +46,10 @@ function Cadastrar() {
         if (inputEmail.current) inputEmail.current.value = '';
     } 
 }
+
+async function goToBack() {
+    navigate(`/`);
+  }
 
  async function iniciar() {
   document.getElementById("mensage").style.display = "none";
@@ -79,7 +86,12 @@ function Cadastrar() {
         <div className='container'>
   
             <form action="">
-              <h1>Cadastro</h1>
+              <div className='containertitle'>
+                <h1>Cadastrar</h1>
+                <button onClick={goToBack}>
+                   <img src={Imageback} className='img rodar' />
+                </button>
+              </div>
               
               <div className='containerSon'>
               <input placeholder='User' name="User" type='text'ref={inputUser}/>
@@ -89,7 +101,7 @@ function Cadastrar() {
               </div>
               <div className='containerSon'>
               <input placeholder='CPF' name="CPF" type='text' ref={inputCPF} maxlength="11" className='numero'/>
-              <input placeholder='Telefone' name="Telefone" ref={inputTelefone} maxlength="9" className='numero'/>
+              <input placeholder='Telefone' name="Telefone" ref={inputTelefone} maxlength="11" className='numero'/>
               <input placeholder='E-mail' name="Email" type='email' ref={inputEmail}/>
               </div>
               <button type='button' onClick={postUsers}>Cadastrar</button>

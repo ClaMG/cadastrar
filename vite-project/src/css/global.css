@@ -281,6 +281,14 @@ form button:hover {
     transition: filter 0.3s;
 }
 
+#userstitle{
+    margin-bottom: 20px;
+    width: 39%;
+}
+
+.rodar{
+    transform: rotate(180deg);
+}
 /* Mantém o ícone branco no hover do deletar (que tem fundo vermelho) */
 .card .containerbtn button:first-child:hover .img {
     filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(240deg) brightness(100%) contrast(100%); 
@@ -355,3 +363,4 @@ form button:hover {
         grid-column: span 1;
     }
 }
+
