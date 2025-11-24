@@ -137,7 +137,7 @@ export async function logar(req, res){
         const payload = {id: user.id};
     
         const token = jwt.sign(payload, secretKey, {expiresIn: '1h'});//cria o token
-        res.json({token});
+        res.json({token, payload});
 
     }
     

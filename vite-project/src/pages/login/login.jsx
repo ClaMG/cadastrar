@@ -26,19 +26,21 @@
                         senha: inputSenha.current.value,
                     })//Envia para api
 
+
                     if(userFromApi.data.token){
                         paragrafo.style.color = "#198754";
                         paragrafo.textContent = 'Login realizado com sucesso';
 
                         localStorage.setItem('token', userFromApi.data.token);//Salva o token no local storage
 
-                        if(inputUser.current.value == 'admin'){
+                        if(inputUser.current.value === 'admin'){
                             localStorage.setItem('isAdmin', 'true');
                             setTimeout(() => {
                                 navigate('/usersAdm');
                             }, 1000);
                         }else{
                             localStorage.setItem('isAdmin', 'false');
+                            localStorage.setItem('id', userFromApi.data.payload.id);   
                             setTimeout(() => {
                                 navigate('/users');
                             }, 1000);

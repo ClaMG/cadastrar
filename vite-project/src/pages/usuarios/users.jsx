@@ -1,45 +1,36 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../../css/global.css'
-import Imagedelet from "../../assets/delete.svg"
-import Imageupdate from "../../assets/edit.svg"
-import Imagelupa from "../../assets/lupa.svg"
 import Imageback from "../../assets/back.svg"
 import api from '../../services/api'
 
 
 function Home(){
-    const [users, setUsers] = useState([])//adicionar automaticamente na tela
     const [filteredUsers, setFilteredUsers] = useState([])//para filtrar
-    const inputPesquisarId = useRef()
     const navigate = useNavigate();
 
-  async function getUsers(){
-    const userFromApi = await api.get('/users')//puxa da api
-    setUsers(userFromApi.data)//adicionar automaticamente na tela
-    setFilteredUsers(userFromApi.data)
-  }
-
-  async function deletUsers(id) {
-    await api.delete(`/user/${id}`)
-
-    getUsers()
-    if (inputPesquisarId.current) inputPesquisarId.current.value = '';
-  }
-
   async function getIdUser(id) {
-    if(id == 0 || id == null ){
-      getUsers() 
-    } else {
-      const userFromApi = await api.get(`/user/${id}`) 
-      setFilteredUsers([userFromApi.data]) 
+    const paragrafo = document.getElementById('mensage');
+            paragrafo.style.display = "none";
+            
+            try {
+                const userFromApi = await api.get(`/user/${id}`) 
+                setFilteredUsers([userFromApi.data]) 
+            } catch (error) {
+            paragrafo.style.display = "block";
+            paragrafo.style.color = "#dc3545";
+            paragrafo.textContent = 'Erro ao buscar usuário';
+        }
     }
-  }
     
   async function iniciar() {
+      
       if(localStorage.getItem('token') == null){
-        navigate('/login');
-      }
+          navigate('/login');
+        }
+
+        const id = localStorage.getItem('id');
+        getIdUser(id)
 
     //Para não permitir letras nos inputs de números
     const inputs = document.getElementsByClassName('numero');
@@ -62,37 +53,23 @@ function Home(){
     
 }
 
-  async function goToUpdate(id) {
-    navigate(`/atualizar/${id}`);
-  }
-
    async function goToBack() {
     navigate(`/`);
   }
 
 
-  useEffect(()=>{
-    getUsers()
+  useEffect(()=>{   
     iniciar()
   }, [])//executa a função quando carrega a tela
 
   return(
     <><div className='container'>
         <div className='containertitle' id='userstitle'>
-            <h1>Usuarios</h1>
+            <h1>Usuario</h1>
             <button onClick={goToBack}>
                 <img src={Imageback} className='img rodar' />
             </button>
         </div>
-
-        <form action=""  className='containerpesquisa' onSubmit={(e) => e.preventDefault()}>
-            <input placeholder='Id de pesquisa' name="id_pesquisa" type='search' ref={inputPesquisarId} className='numero'/>
-            <div className='containerbtnPesquisa'>
-                <button onClick={() => {getIdUser(inputPesquisarId.current.value);}}>
-                        <img src={Imagelupa} className='img'/>
-                </button>
-            </div>
-        </form>
 
         { filteredUsers.map((user) => ( 
             <div key={user.id} className='card' id='todos'>
@@ -108,6 +85,8 @@ function Home(){
                 </div>
             </div>
         ))}
+
+        <p id='mensage'> ???????</p>
     </div>
     </>
   )

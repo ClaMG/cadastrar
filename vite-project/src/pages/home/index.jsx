@@ -14,6 +14,7 @@ function Home(){
      async function goToLogin() {
         localStorage.removeItem('token');
         localStorage.removeItem('isAdmin');
+        localStorage.removeItem('id');
         navigate('/login');
     }
 
