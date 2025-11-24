@@ -21,6 +21,9 @@
 /* ESTILOS GLOBAIS E ESTRUTURA */
 /* ---------------------------------------------------- */
 
+body{
+    overflow-y: auto;
+}
 
 
 .container {
@@ -298,10 +301,6 @@ form button:hover {
 .card .containerbtn button:last-child:hover .img, 
 .containerpesquisa button .img {
     filter: invert(100%); 
-}
-
-#btnAdm{
-    display: none;
 }
 
 /* ---------------------------------------------------- */

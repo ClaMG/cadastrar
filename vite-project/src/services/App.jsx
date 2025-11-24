@@ -17,7 +17,7 @@
             <Route path="/usersAdm" element={<UsersAdmScreen />} />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
-            <Route path="/atualizar/:id" element={<UpdateScreen />} />
+            <Route path="/atualizar" element={<UpdateScreen />} />
           </Routes>
         </BrowserRouter>
       );

@@ -17,7 +17,8 @@ function Atualizar() {
   const navigate = useNavigate()
 
   async function goToGet() {
-     navigate('/users');
+    const pageUpdate = localStorage.getItem('pageUpdate');
+     navigate(`/${pageUpdate}`);
   }
 
   async function putUsers() {
@@ -53,14 +54,8 @@ function Atualizar() {
 
   
     async function completarInputs() {
-        // Pega a url completa
-        const pathname = window.location.pathname;
-        // Divide o caminho do array usando a barra (/) como separador
-        const pathSegments = pathname.split('/'); 
-        // Remove strings vazias
-        const cleanSegments = pathSegments.filter(Boolean);
         // Pega o id
-        const id = cleanSegments[cleanSegments.length - 1];
+        const id = localStorage.getItem('idToUpdate');
         // Coloca o id no input
         inputUpId.current.value = id;
         if(id && id != 0){

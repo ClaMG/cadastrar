@@ -1,7 +1,9 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../../css/global.css'
+import '../../css/user.css'
 import Imageback from "../../assets/back.svg"
+import Imageupdate from "../../assets/edit.svg"
 import api from '../../services/api'
 
 
@@ -29,6 +31,8 @@ function Home(){
           navigate('/login');
         }
 
+        localStorage.setItem('pageUpdate', 'users');
+
         const id = localStorage.getItem('id');
         getIdUser(id)
 
@@ -53,6 +57,11 @@ function Home(){
     
 }
 
+async function goToUpdate(id) {
+    localStorage.setItem('idToUpdate', id);
+    navigate(`/atualizar/`);
+  }
+
    async function goToBack() {
     navigate(`/`);
   }
@@ -72,7 +81,7 @@ function Home(){
         </div>
 
         { filteredUsers.map((user) => ( 
-            <div key={user.id} className='card' id='todos'>
+            <div key={user.id} className='carduser' id='todos'>
                 <div>
                 <p>Id: <span>{user.id}</span></p>
                 <p>Idade: <span>{user.idade}</span></p>
@@ -83,10 +92,15 @@ function Home(){
                 <p>Nome: <span>{user.nome}</span></p>
                 <p>E-mail: <span>{user.email}</span></p>
                 </div>
+                <div className='containerbtnuser'>
+                    <button onClick={() => goToUpdate(user.id)}>
+                        <img src={Imageupdate} className='img'/>
+                    </button>
+                </div>
             </div>
         ))}
 
-        <p id='mensage'> ???????</p>
+        <p id='mensage'>Carregando...</p>
     </div>
     </>
   )

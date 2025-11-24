@@ -1,0 +1,154 @@
+:root {
+    /* Cores (Modo Escuro) */
+    --primary-color: #4A90E2; /* Azul de Destaque (Claro para Fundo Escuro) */
+    --primary-hover: #6a77e8; /* Azul Secundário no Hover */
+    --secondary-color: #6c757d; /* Cinza de Borda/Placeholder */
+    --text-dark: #f8f9fa; /* Texto Principal Claro */
+    --text-light: #121212; /* Texto para Botões (Fundo Claro) */
+    --bg-main: #121212; /* Fundo Principal MUITO Escuro */
+    --bg-surface: #1e1e1e; /* Superfícies (Formulários, Cards) */
+    --danger-color: #dc3545; /* Cor para Excluir */
+
+    /* Espaçamentos e Sombras */
+    --spacing-large: 2rem;
+    --spacing-medium: 1.5rem;
+    --border-radius: 8px;
+    --shadow-subtle: 0 4px 10px rgba(0, 0, 0, 0.5); /* Sombra mais escura */
+    --shadow-active: 0 0 0 0.25rem rgba(74, 144, 226, 0.4); /* Sombra de foco azul */
+}
+
+
+
+/* --- Botões de Ação (Editar) --- */
+
+.containerbtnuser {
+    display: flex;
+    justify-content: flex-end; /* Alinha o botão para a direita */
+    margin-top: 15px;
+}
+
+.containerbtnuser button {
+    background-color: #1a73e8; /* Azul primário */
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    display: flex;
+    align-items: center;
+}
+
+.containeruser {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--spacing-medium);
+    box-sizing: border-box;
+    min-height: 100vh;
+}
+
+.carduser {
+    background-color: var(--bg-surface); /* Superfície escura para o card */
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-subtle); /* Sombra mais escura */
+    width: 50%;
+    padding: var(--spacing-medium);
+    margin-bottom: var(--spacing-medium);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    box-shadow: 0 0 15px rgba(74, 144, 226, 0.2); /* Suave brilho azul no hover */
+}
+
+
+/* Estilo para cada linha de dados (p) */
+.carduser p {
+    font-size: 1.1em;
+    color: var(--text-dark); /* Texto claro para o rótulo */
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed var(--secondary-color); /* Linha tracejada suave */
+}
+
+/* Estilo para os valores dos dados (span) */
+.carduser p span {
+    font-weight: 600;
+    color: var(--primary-color); /* Azul de destaque para os valores */
+    text-align: right;
+    max-width: 60%;
+    overflow-wrap: break-word;
+}
+
+.carduser .containerbtnuser {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.carduser .containerbtnuser button {
+    background-color: #333333; /* Fundo escuro para botões */
+    border: 1px solid var(--secondary-color);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.carduser .containerbtnuser button:first-child:hover {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+    transform: scale(1.1);
+}
+
+.carduser .containerbtnuser button:last-child:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+.carduser > div:first-child {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 8px 25px;
+    flex-grow: 1;
+}
+
+.carduser .containerbtnuser button:first-child:hover .img {
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(240deg) brightness(100%) contrast(100%); 
+}
+
+/* --- Responsividade --- */
+@media (max-width: 600px) {
+    .containertitle h1 {
+        font-size: 1.8em;
+    }
+
+    .carduser {
+        padding: 20px;
+    }
+    
+    .carduser p {
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 8px 0;
+    }
+    
+    .carduser p span {
+        text-align: left;
+        font-size: 1em;
+        margin-top: 2px;
+        max-width: 100%;
+    }
+
+    .containerbtnuser {
+        justify-content: center;
+    }
+}

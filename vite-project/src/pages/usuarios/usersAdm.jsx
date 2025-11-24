@@ -41,6 +41,8 @@ function HomeAdm(){
         navigate('/login');
       }
 
+       localStorage.setItem('pageUpdate', 'usersAdm');
+
     //Para não permitir letras nos inputs de números
     const inputs = document.getElementsByClassName('numero');
     inputs.addEventListener('keydown', function(event) {
@@ -63,7 +65,8 @@ function HomeAdm(){
 }
 
   async function goToUpdate(id) {
-    navigate(`/atualizar/${id}`);
+   localStorage.setItem('idToUpdate', id);
+    navigate(`/atualizar/`);
   }
 
    async function goToBack() {
