@@ -11,14 +11,19 @@ function Home(){
     async function goToPush() {
         navigate('/register');
     }
+     async function goToLogin() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('isAdmin');
+        navigate('/login');
+    }
 
     return (
         <div className='home-container'> 
             <h1>Bem-vindo!</h1>
             <p>Selecione uma opção.</p>
             <div className='home-buttons'>
-                <button onClick={goToGet} className='home-btn'>Visualizar Usuários</button>
-                <button onClick={goToPush} className='home-btn primary'>Cadastrar Novo Usuario</button>
+                <button onClick={goToPush} className='home-btn primary'>Cadastrar</button>
+                <button onClick={goToLogin} className='home-btn'>Logar</button>
             </div>
         </div>
     );

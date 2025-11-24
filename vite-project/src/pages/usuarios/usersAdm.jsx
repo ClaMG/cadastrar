@@ -8,7 +8,7 @@ import Imageback from "../../assets/back.svg"
 import api from '../../services/api'
 
 
-function Home(){
+function HomeAdm(){
     const [users, setUsers] = useState([])//adicionar automaticamente na tela
     const [filteredUsers, setFilteredUsers] = useState([])//para filtrar
     const inputPesquisarId = useRef()
@@ -37,7 +37,7 @@ function Home(){
   }
     
   async function iniciar() {
-      if(localStorage.getItem('token') == null){
+      if(localStorage.getItem('token') == null || localStorage.getItem('isAdmin') === 'false'){
         navigate('/login');
       }
 
@@ -106,6 +106,14 @@ function Home(){
                 <p>Nome: <span>{user.nome}</span></p>
                 <p>E-mail: <span>{user.email}</span></p>
                 </div>
+                <div className='containerbtn'>
+                  <button onClick={() => deletUsers(user.id)}>
+                      <img src={Imagedelet} className='img'/>
+                  </button>
+                  <button onClick={() => goToUpdate(user.id)}>
+                      <img src={Imageupdate} className='img'/>
+                  </button>
+                </div>
             </div>
         ))}
     </div>
@@ -114,4 +122,4 @@ function Home(){
 
 }
 
-export default Home
+export default HomeAdm

@@ -5,8 +5,10 @@ const secretKey = process.env.JWT_SECRET || "secretayour_super_secret_key_here";
 
 
 function authToken(req, res, next) {
-    const authHeader = req.headers['authorization'];//Pega o token do cabeçalho da requisição
-    const token =authHeader?.split(' ')[1];
+    //const authHeader = req.headers['authorization'];//Pega o token do cabeçalho da requisição
+    //const token =authHeader?.split(' ')[1];
+
+    const token = localStorage.getItem('token');//Pega o token do local storage
     
     if (token == null) return res.sendStatus(401).msg = 'Token não fornecido';
     

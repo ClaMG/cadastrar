@@ -12,8 +12,10 @@
     
 
         async function loginUser() {
+
             const paragrafo = document.getElementById('mensage');
             paragrafo.style.display = "block";
+            
             if (!inputUser.current.value || !inputSenha.current.value) {
                 paragrafo.style.color = "#dc3545";
                 paragrafo.textContent = 'Login invalido - Preencha todos os campos';
@@ -24,8 +26,27 @@
                         senha: inputSenha.current.value,
                     })//Envia para api
 
-                    paragrafo.style.color = "#198754";
-                    paragrafo.textContent = 'Login realizado com sucesso';
+                    if(userFromApi.data.token){
+                        paragrafo.style.color = "#198754";
+                        paragrafo.textContent = 'Login realizado com sucesso';
+
+                        localStorage.setItem('token', userFromApi.data.token);//Salva o token no local storage
+
+                        if(inputUser.current.value == 'admin'){
+                            localStorage.setItem('isAdmin', 'true');
+                            setTimeout(() => {
+                                navigate('/usersAdm');
+                            }, 1000);
+                        }else{
+                            localStorage.setItem('isAdmin', 'false');
+                            setTimeout(() => {
+                                navigate('/users');
+                            }, 1000);
+                        }
+
+                        
+                    }
+
 
                 }catch(error){
                     paragrafo.style.color = "#dc3545";
@@ -59,7 +80,7 @@
                 <button type='button' onClick={loginUser}>Login</button>
             </form>
 
-            <p id='mensage'>Resposta</p>
+            <p id='mensage'>Resposta...</p>
         </div>
         
         </>

@@ -123,23 +123,25 @@ export async function logar(req, res){
     const {usuario, senha} = req.body;
     
     const user = await getUserByUsername(usuario); //usa a função e manda o usuario para verificação
+    
 
     //verifica usuario e senha
-
-    if (!user || !user.senha === senha) {
+    if (!user || user.senha !== senha) {
         return res.status(401).json({message: 'Credenciais inválidas'});
+    }else{
+        if (!secretKey) {
+            console.error('JWT_SECRET not defined in .env');
+            return res.status(500).json({message: 'Erro interno do servidor' });
+        }
+    
+        const payload = {id: user.id};
+    
+        const token = jwt.sign(payload, secretKey, {expiresIn: '1h'});//cria o token
+        res.json({token});
+
     }
     
 
-    if (!secretKey) {
-        console.error('JWT_SECRET not defined in .env');
-        return res.status(500).json({message: 'Erro interno do servidor' });
-    }
-
-    const payload = {id: user.id};
-
-    const token = jwt.sign(payload, secretKey, {expiresIn: '1h'});//cria o token
-    res.json({token});
 
     
 }
