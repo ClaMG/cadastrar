@@ -75,7 +75,7 @@ function Atualizar() {
     const paragrafo = document.getElementById('mensage');
     paragrafo.style.display = "none";
 
-    const email = inputEmail.current.value;
+    const email = inputUpEmail.current.value;
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const verificarEmail = regex.test(email);
 
