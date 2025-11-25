@@ -28,7 +28,7 @@ function Cadastrar() {
 
     //Define o novo valor
     input.value = value;
-  };
+  }
 
   const maskTelefone = (event) => {
     const input = event.target;
@@ -43,15 +43,17 @@ function Cadastrar() {
     input.value = value;
    }
   
-  
   async function postUsers() {
       const paragrafo = document.getElementById('mensage');
       paragrafo.style.display = "block";
 
+      const userFromApi = await api.get('/users')//puxa da api
+      const userExists = userFromApi.data.some(user => user.usuario === inputUser.current.value);
+
     if (!inputUser.current.value || !inputSenha.current.value || !inputNome.current.value || !inputIdade.current.value || !inputCPF.current.value || !inputTelefone.current.value || !inputEmail.current.value) {
         paragrafo.style.color = "#dc3545";
         paragrafo.textContent = 'Cadastro invalido - Preencha todos os campos';
-    }else if(inputUser.current.value == 'admin'){
+    }else if(userExists){
        paragrafo.style.color = "#dc3545";
         paragrafo.textContent = 'Cadastro invalido - Usuario ja existe';
     }

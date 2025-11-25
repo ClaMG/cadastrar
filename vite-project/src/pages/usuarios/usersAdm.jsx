@@ -32,7 +32,7 @@ function HomeAdm(){
       getUsers() 
     } else {
       const userFromApi = await api.get(`/user/${id}`) 
-      setFilteredUsers([userFromApi.data]) 
+      setFilteredUsers([userFromApi.data])
     }
   }
     
@@ -96,6 +96,8 @@ function HomeAdm(){
                 </button>
             </div>
         </form>
+
+        <p id='mensage'>Carregando...</p>
 
         { filteredUsers.map((user) => ( 
             <div key={user.id} className='card' id='todos'>

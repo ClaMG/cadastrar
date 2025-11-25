@@ -16,6 +16,34 @@ function Atualizar() {
   const inputUpEmail = useRef() 
   const navigate = useNavigate()
 
+
+  const maskCPF = (event) => {
+    const input = event.target;
+    //Remove caractere que não seja dígito
+    let value = input.value.replace(/\D/g, '');
+
+    //Aplica a máscara
+    value = value.replace(/(\d{3})(\d)/, '$1.$2'); //primeiro ponto
+    value = value.replace(/(\d{3})(\d)/, '$1.$2'); //segundo ponto
+    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // hífen
+
+    //Define o novo valor
+    input.value = value;
+  };
+
+  const maskTelefone = (event) => {
+    const input = event.target;
+    //Remove caractere que não seja dígito
+    let value = input.value.replace(/\D/g, ''); 
+
+    // Aplica a máscara 
+    value = value.replace(/^(\d{2})/, '($1) '); 
+    value = value.replace(/(\d)(\d{4})$/, '$1-$2'); 
+
+    //Define o novo valor
+    input.value = value;
+   }
+
   async function goToGet() {
     const pageUpdate = localStorage.getItem('pageUpdate');
      navigate(`/${pageUpdate}`);
@@ -46,13 +74,13 @@ function Atualizar() {
     
            paragrafo.style.color = "#198754";
            paragrafo.textContent = 'Atualização realizada com sucesso';
+
+            setTimeout(() => {
+               goToGet();
+            }, 1000);
         }
-    }
-
-    
+    } 
   }
-
-  
     async function completarInputs() {
         // Pega o id
         const id = localStorage.getItem('idToUpdate');
@@ -74,6 +102,9 @@ function Atualizar() {
     }
 
   async function iniciar() {
+    if(localStorage.getItem('token') == null){
+          navigate('/login');
+        }
     
     const inputs = document.getElementsByClassName('numero');
 
@@ -122,8 +153,8 @@ function Atualizar() {
               </div>
               <div className='containerSon'>
               <input placeholder='Idade' name="Idade" type='text' ref={inputUpIdade} maxlength="2" className='numero'/>
-              <input placeholder='CPF' name="CPF" type='text' ref={inputUpCPF} maxlength="11"className='numero'/>
-              <input placeholder='Telefone' name="Telefone" type='text' ref={inputUpTelefone} maxlength="11" className='numero'/>
+               <input placeholder='CPF' name="CPF" type='text' ref={inputUpCPF} maxLength="14" className='numero' onInput={maskCPF}/>
+              <input placeholder='Telefone' name="Telefone" ref={inputUpTelefone} maxlength="15" className='numero' onInput={maskTelefone}/>
               <input placeholder='E-mail' name="Email" type='email' ref={inputUpEmail}/>
               </div>
               <button type='button' onClick={putUsers}>Atualizar</button>
