@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Imageback from "../../assets/back.svg"
+import ImageEyeOpen from "../../assets/eyeopen.svg"
+import ImageEyeClose from "../../assets/eyeclose.svg"
 import '../../css/global.css'
 import api from '../../services/api'
 
@@ -15,6 +17,8 @@ function Cadastrar() {
   const inputTelefone = useRef()
   const inputEmail = useRef() 
   const navigate = useNavigate();
+
+  
 
   const maskCPF = (event) => {
     const input = event.target;
@@ -42,20 +46,57 @@ function Cadastrar() {
     //Define o novo valor
     input.value = value;
    }
+
+   async function eye() {
+        const senhaInput = document.getElementById('senha');
+        const eyeImg = document.querySelector('.imgeye');
+
+        if (senhaInput.type === 'password') {
+            senhaInput.type = 'text';
+            eyeImg.src = ImageEyeOpen; 
+        } else {
+            senhaInput.type = 'password';
+            eyeImg.src = ImageEyeClose; 
+        }
+    }
+    
+
+   async function testApi() {
+    const paragrafo = document.getElementById('mensage');
+    try {
+        await fetch(api.defaults.baseURL);
+    } catch (error) {
+        paragrafo.style.display = "block";
+        paragrafo.style.color = "#dc3545";
+        paragrafo.textContent = 'Erro: A API não está respondendo.';
+        
+    }
+   }
   
   async function postUsers() {
       const paragrafo = document.getElementById('mensage');
-      paragrafo.style.display = "block";
+      paragrafo.style.display = "none";
 
       const userFromApi = await api.get('/users')//puxa da api
       const userExists = userFromApi.data.some(user => user.usuario === inputUser.current.value);
 
+      const email = inputEmail.current.value;
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const verificarEmail = regex.test(email);
+
+
     if (!inputUser.current.value || !inputSenha.current.value || !inputNome.current.value || !inputIdade.current.value || !inputCPF.current.value || !inputTelefone.current.value || !inputEmail.current.value) {
-        paragrafo.style.color = "#dc3545";
+      paragrafo.style.display = "block";  
+      paragrafo.style.color = "#dc3545";
         paragrafo.textContent = 'Cadastro invalido - Preencha todos os campos';
     }else if(userExists){
+      paragrafo.style.display = "block"; 
        paragrafo.style.color = "#dc3545";
         paragrafo.textContent = 'Cadastro invalido - Usuario ja existe';
+    }else if(!verificarEmail){
+      paragrafo.style.display = "block"; 
+       paragrafo.style.color = "#dc3545";
+        paragrafo.textContent = 'Cadastro invalido - E-mail inválido, adicione @ e .com';
     }
     else{
         const userFromApi = await api.post('/user',{
@@ -67,7 +108,8 @@ function Cadastrar() {
             telefone: inputTelefone.current.value,
             email: inputEmail.current.value
         })//Envia para api
-        
+
+        paragrafo.style.display = "block"; 
         paragrafo.style.color = "#198754";
         paragrafo.textContent = 'Cadastro realizado com sucesso';
         if (inputUser.current) inputUser.current.value = '';
@@ -77,8 +119,11 @@ function Cadastrar() {
         if (inputCPF.current) inputCPF.current.value = '';
         if (inputTelefone.current) inputTelefone.current.value = '';
         if (inputEmail.current) inputEmail.current.value = '';
-    } 
+    }
+    testApi() 
 }
+
+
 
 async function goToBack() {
     navigate(`/`);
@@ -107,6 +152,7 @@ async function goToBack() {
             }
         });
     }
+    testApi()
 }
 
   useEffect(()=>{
@@ -128,7 +174,12 @@ async function goToBack() {
               
               <div className='containerSon'>
               <input placeholder='User' name="User" type='text'ref={inputUser}/>
-              <input placeholder='Senha' name="Senha" type='password'ref={inputSenha}/>
+              <div className='senhaContainer'>
+                  <input placeholder='Senha' name="Senha" type='password'ref={inputSenha} id='senha'/>
+                  <button type='button' onClick={eye}>
+                      <img src={ImageEyeClose} alt="olho da senha" className='imgeye'/>
+                  </button>
+              </div>
               <input placeholder='Nome' name="Nome" type='text'ref={inputNome}/>
               <input placeholder='Idade' name="Idade" type='text' ref={inputIdade} maxlength="2" className='numero'/>
               </div>

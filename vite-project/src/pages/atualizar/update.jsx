@@ -2,11 +2,12 @@ import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../../css/global.css'
 import ImageX from "../../assets/x.svg"
+import ImageEyeOpen from "../../assets/eyeopen.svg"
+import ImageEyeClose from "../../assets/eyeclose.svg"
 import api from '../../services/api'
 
 function Atualizar() {
 
-  const inputUpId = useRef()
   const inputUpUser = useRef()
   const inputUpSenha = useRef()
   const inputUpNome = useRef()
@@ -44,52 +45,85 @@ function Atualizar() {
     input.value = value;
    }
 
+   async function eye() {
+        const senhaInput = document.getElementById('senha');
+        const eyeImg = document.querySelector('.imgeye');
+
+        if (senhaInput.type === 'password') {
+            senhaInput.type = 'text';
+            eyeImg.src = ImageEyeOpen; 
+        } else {
+            senhaInput.type = 'password';
+            eyeImg.src = ImageEyeClose; 
+        }
+    }
+
+    async function testApi() {
+    const paragrafo = document.getElementById('mensage');
+    try {
+        await fetch(api.defaults.baseURL);
+    } catch (error) {
+        paragrafo.style.display = "block";
+        paragrafo.style.color = "#dc3545";
+        paragrafo.textContent = 'Erro: A API não está respondendo.';
+        
+    }
+   }
+
+
+  async function putUsers() {
+    const paragrafo = document.getElementById('mensage');
+    paragrafo.style.display = "none";
+
+    const email = inputEmail.current.value;
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const verificarEmail = regex.test(email);
+
+    if (!inputUpUser.current.value || !inputUpSenha.current.value || !inputUpNome.current.value || !inputUpIdade.current.value || !inputUpCPF.current.value || !inputUpTelefone.current.value || !inputUpEmail.current.value) {
+      paragrafo.style.display = "block";  
+      paragrafo.style.color = "#dc3545";
+        paragrafo.textContent = 'Atualização invalida - Preencha todos os campos';
+    }else if(!verificarEmail){
+      paragrafo.style.display = "block"; 
+       paragrafo.style.color = "#dc3545";
+        paragrafo.textContent = 'Cadastro invalido - E-mail inválido, adicione @ e .com';
+    }
+    else{
+      try {
+        const userFromApi = await api.put('/user',{
+          usuario: inputUpUser.current.value,
+          senha: inputUpSenha.current.value,
+          nome: inputUpNome.current.value,
+          idade: inputUpIdade.current.value,
+          cpf: inputUpCPF.current.value,
+          telefone: inputUpTelefone.current.value,
+          email: inputUpEmail.current.value
+        })//Envia para api
+
+         paragrafo.style.display = "block";  
+       paragrafo.style.color = "#198754";
+       paragrafo.textContent = 'Atualização realizada com sucesso';
+
+        setTimeout(() => {
+           goToGet();
+        }, 1000);
+      } catch (error) {
+         paragrafo.style.display = "block";  
+        paragrafo.style.color = "#dc3545";
+        paragrafo.textContent = 'Erro ao atualizar usuário';
+      }
+    } 
+    testApi()
+  }
+
   async function goToGet() {
     const pageUpdate = localStorage.getItem('pageUpdate');
      navigate(`/${pageUpdate}`);
   }
-
-  async function putUsers() {
-    const paragrafo = document.getElementById('mensage');
-    paragrafo.style.display = "block";
-
-    if (!inputUpId.current.value || !inputUpUser.current.value || !inputUpSenha.current.value || !inputUpNome.current.value || !inputUpIdade.current.value || !inputUpCPF.current.value || !inputUpTelefone.current.value || !inputUpEmail.current.value) {
-        paragrafo.style.color = "#dc3545";
-        paragrafo.textContent = 'Atualização invalida - Preencha todos os campos';
-    }else{
-        if(inputUpId.current.value <= 0){
-            paragrafo.style.color = "#dc3545";
-            paragrafo.textContent = 'Atualização invalida - Id deve ser maior que 0';
-        }else{
-            const userFromApi = await api.put('/user',{
-              id: inputUpId.current.value,
-              usuario: inputUpUser.current.value,
-              senha: inputUpSenha.current.value,
-              nome: inputUpNome.current.value,
-              idade: inputUpIdade.current.value,
-              cpf: inputUpCPF.current.value,
-              telefone: inputUpTelefone.current.value,
-              email: inputUpEmail.current.value
-            })//Envia para api
-    
-           paragrafo.style.color = "#198754";
-           paragrafo.textContent = 'Atualização realizada com sucesso';
-
-            setTimeout(() => {
-               goToGet();
-            }, 1000);
-        }
-    } 
-  }
+  
     async function completarInputs() {
         // Pega o id
         const id = localStorage.getItem('idToUpdate');
-        // Coloca o id no input
-        inputUpId.current.value = id;
-        if(id && id != 0){
-            const inputId = document.getElementById("inputId");
-            inputId.disabled = true;
-        }
 
         const userFromApi = await api.get(`/user/${id}`)
         inputUpUser.current.value = userFromApi.data.usuario;
@@ -100,6 +134,7 @@ function Atualizar() {
         inputUpTelefone.current.value = userFromApi.data.telefone;
         inputUpEmail.current.value = userFromApi.data.email;
     }
+
 
   async function iniciar() {
     if(localStorage.getItem('token') == null){
@@ -126,7 +161,7 @@ function Atualizar() {
             }
         });
     }
-    
+    testApi()
   }
 
   useEffect(()=>{
@@ -146,9 +181,13 @@ function Atualizar() {
               </div>
               
               <div className='containerSon'>
-              <input placeholder='Id' name="Id" type='text'ref={inputUpId} className='numero' id='inputId'/>
               <input placeholder='User' name="User" type='text'ref={inputUpUser}/>
-              <input placeholder='Senha' name="Senha" type='password'ref={inputUpSenha}/>
+              <div className='senhaContainer'>
+                <input placeholder='Senha' name="Senha" type='password'ref={inputUpSenha} id='senha'/>
+                <button type='button' onClick={eye}>
+                    <img src={ImageEyeClose} alt="olho da senha" className='imgeye'/>
+                </button>
+              </div>
               <input placeholder='Nome' name="Nome" type='text'ref={inputUpNome}/>
               </div>
               <div className='containerSon'>

@@ -64,6 +64,15 @@ form, #update {
     transition: transform 0.3s ease;
 }
 
+.senhaContainer{
+    position: relative;
+    margin-top: -19px;
+}
+
+.senhaContainer input{
+    width: 100%;
+}
+
 #update {
     position: fixed; 
     top: 50%;
@@ -146,6 +155,10 @@ form input:focus {
     border-color: var(--primary-color);
     box-shadow: var(--shadow-active);
     background-color: #333333;
+}
+
+#login{
+    max-width: 400px;
 }
 
 /* Botões de Ação */
@@ -280,6 +293,16 @@ form button:hover {
     width: 20px; 
     height: 20px;
     /* Filtro para ícones claros (branco/cinza claro) */
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(240deg) brightness(100%) contrast(100%);
+    transition: filter 0.3s;
+}
+
+.imgeye{
+    width: 20px; 
+    height: 20px;
+    margin-left: -30px;
+    margin-top: 7px;
+    position: absolute;
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(240deg) brightness(100%) contrast(100%);
     transition: filter 0.3s;
 }

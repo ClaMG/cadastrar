@@ -1,6 +1,5 @@
     // App.js
     import { BrowserRouter, Routes, Route } from 'react-router-dom';
-    import Home from '../pages/completo/index';//Tudo em uma página só
     import UsersScreen from '../pages/usuarios/users';
     import UsersAdmScreen from '../pages/usuarios/usersAdm';
     import HomeScreen from '../pages/home/index';

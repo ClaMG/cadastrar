@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../../css/global.css'
 import Imagedelet from "../../assets/delete.svg"
 import Imageupdate from "../../assets/edit.svg"
-import Imagelupa from "../../assets/lupa.svg"
+import Imagelupa from "../../assets/search.svg"
 import Imageback from "../../assets/back.svg"
 import api from '../../services/api'
 
@@ -13,27 +13,71 @@ function HomeAdm(){
     const [filteredUsers, setFilteredUsers] = useState([])//para filtrar
     const inputPesquisarId = useRef()
     const navigate = useNavigate();
+    const paragrafo = document.getElementById('mensage');
+
+    async function testApi() {
+    const paragrafo = document.getElementById('mensage');
+    try {
+        await fetch(api.defaults.baseURL);
+    } catch (error) {
+        paragrafo.style.display = "block";
+        paragrafo.style.color = "#dc3545";
+        paragrafo.textContent = 'Erro: A API não está respondendo.';
+        
+    }
+   }
 
   async function getUsers(){
     const userFromApi = await api.get('/users')//puxa da api
     setUsers(userFromApi.data)//adicionar automaticamente na tela
     setFilteredUsers(userFromApi.data)
+    testApi()
   }
 
   async function deletUsers(id) {
-    await api.delete(`/user/${id}`)
+    
+
+    try {
+      await api.delete(`/user/${id}`)
+      paragrafo.style.display = "block";
+      paragrafo.style.color = "#198754";
+      paragrafo.textContent = 'Usuário deletado com sucesso';
+    }catch (error) {
+      paragrafo.style.display = "block";
+      paragrafo.style.color = "#dc3545";
+      paragrafo.textContent = 'Erro ao deletar usuário';
+    }
+    
 
     getUsers()
     if (inputPesquisarId.current) inputPesquisarId.current.value = '';
+   
+    setTimeout(() => {
+       paragrafo.style.display = "none";
+    }, 1000);
+
+    testApi()
   }
 
   async function getIdUser(id) {
-    if(id == 0 || id == null ){
+    
+    paragrafo.style.display = "none";
+
+    const userFromApiGet = await api.get('/users')//puxa da api
+    const userExists = userFromApiGet.data.some(user => user.id == id);
+    
+    if(id == " " || id == null ){
       getUsers() 
-    } else {
+    }else if(userExists){
       const userFromApi = await api.get(`/user/${id}`) 
       setFilteredUsers([userFromApi.data])
+    }else{
+      paragrafo.style.display = "block";
+      paragrafo.style.color = "#dc3545";
+      paragrafo.textContent = 'Usuário não encontrado';
+      getUsers()
     }
+    testApi()
   }
     
   async function iniciar() {
@@ -61,6 +105,7 @@ function HomeAdm(){
             event.preventDefault(); 
         }
     });
+    testApi()
     
 }
 

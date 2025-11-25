@@ -25,6 +25,7 @@
     display: flex;
     justify-content: flex-end; /* Alinha o botão para a direita */
     margin-top: 15px;
+    gap: 10px;
 }
 
 .containerbtnuser button {
@@ -70,6 +71,7 @@
     font-size: 1.1em;
     color: var(--text-dark); /* Texto claro para o rótulo */
     margin: 10px 0;
+    width: 270px;
     display: flex;
     justify-content: space-between;
     padding-bottom: 5px;
@@ -83,6 +85,10 @@
     text-align: right;
     max-width: 60%;
     overflow-wrap: break-word;
+}
+
+#email {
+    width: 97%;
 }
 
 .carduser .containerbtnuser {
