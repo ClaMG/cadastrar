@@ -136,7 +136,6 @@ function HomeAdm(){
                 <p>Idade: <span>{user.idade}</span></p>
                 <p>User: <span>{user.usuario}</span></p>
                 <p>CPF: <span>{user.cpf}</span></p>
-                <p>Senha: <span>{user.senha}</span></p>
                 <p>Telefone: <span>{user.telefone}</span></p>
                 <p>Nome: <span>{user.nome}</span></p>
                 <p>E-mail: <span>{user.email}</span></p>

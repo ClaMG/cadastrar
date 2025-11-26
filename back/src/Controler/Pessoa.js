@@ -1,8 +1,10 @@
 import{openDb}from'../configDB.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
 dotenv.config();
 
+const saltRounds = 10;
 
 export async function createTable(){
     try{
@@ -20,8 +22,9 @@ export async function insertUsuario(req, res){
         if(!user.usuario || !user.senha || !user.nome || !user.idade || !user.cpf || !user.telefone || !user.email){
             return res.status(400).json({ message: 'Preencha todos os campos obrigatórios' });
         } else{
+            const hashedPassword = await bcrypt.hash(user.senha, saltRounds);
             openDb().then(db=>{
-                db.run('INSERT INTO Usuarios (usuario, senha, nome, idade, cpf, telefone, email) VALUES (?, ?, ?, ?, ?, ?, ?)', [user.usuario, user.senha, user.nome, user.idade, user.cpf, user.telefone, user.email]);
+                db.run('INSERT INTO Usuarios (usuario, senha, nome, idade, cpf, telefone, email) VALUES (?, ?, ?, ?, ?, ?, ?)', [user.usuario, hashedPassword, user.nome, user.idade, user.cpf, user.telefone, user.email]);
             });
             res.json({
                 "statuscode": 200
@@ -42,8 +45,10 @@ export async function updateUsuario(req, res){
         if(!user.usuario || !user.senha || !user.nome || !user.idade || !user.cpf || !user.telefone || !user.email || !user.id){
             return res.status(400).json({ message: 'Preencha todos os campos obrigatórios' });
         } else{
+
+            const hashedPassword = await bcrypt.hash(user.senha, saltRounds);
              openDb().then(db=>{
-                db.run('UPDATE Usuarios SET usuario=?, senha=?, nome = ?, idade = ?, cpf=?, telefone=?, email=? WHERE id = ?', [user.usuario, user.senha, user.nome, user.idade, user.cpf, user.telefone, user.email, user.id]);
+                db.run('UPDATE Usuarios SET usuario=?, senha=?, nome = ?, idade = ?, cpf=?, telefone=?, email=? WHERE id = ?', [user.usuario, hashedPassword, user.nome, user.idade, user.cpf, user.telefone, user.email, user.id]);
             });
             res.json({
                 "statuscode": 200
@@ -132,27 +137,22 @@ export async function logar(req, res){
     const secretKey = process.env.JWT_SECRET || 'secretayour_super_secret_key_here';
     const {usuario, senha} = req.body;
     
-    const user = await getUserByUsername(usuario); //usa a função e manda o usuario para verificação
+    const user = await getUserByUsername(usuario);
+    const passwordMatch = await bcrypt.compare(senha, user.senha); 
     
-
-    //verifica usuario e senha
-    if (!user || user.senha !== senha) {
+    if (!user || !passwordMatch) {
         return res.status(401).json({message: 'Credenciais inválidas'});
-    }else{
-        if (!secretKey) {
-            console.error('JWT_SECRET not defined in .env');
-            return res.status(500).json({message: 'Erro interno do servidor' });
-        }
-    
-        const payload = {id: user.id};
-    
-        const token = jwt.sign(payload, secretKey, {expiresIn: '1h'});//cria o token
-        res.json({token, payload});
-
     }
-    
 
+    if (!secretKey) {
+        console.error('JWT_SECRET not defined in .env');
+        return res.status(500).json({message: 'Erro interno do servidor' });
+    }
 
+    const payload = {id: user.id};
+
+    const token = jwt.sign(payload, secretKey, {expiresIn: '1h'});//cria o token
+    res.json({token, payload});
     
 }
 
