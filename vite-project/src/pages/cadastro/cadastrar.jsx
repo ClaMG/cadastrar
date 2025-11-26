@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
@@ -71,6 +71,7 @@ function Cadastrar() {
         
     }
    }
+
   
   async function postUsers() {
 
@@ -163,21 +164,42 @@ async function goToBack() {
               </div>
               
               <div className='containerSon'>
-              <input placeholder='User' name="User" type='text'ref={inputUser}/>
-              <div className='senhaContainer'>
-                  <input placeholder='Senha' name="Senha" type='password'ref={inputSenha} id='senha'/>
-                  <button type='button' onClick={eye}>
-                      <img src={ImageEyeClose} alt="olho da senha" className='imgeye'/>
-                  </button>
-              </div>
-              <input placeholder='Nome' name="Nome" type='text'ref={inputNome}/>
-              <input placeholder='Idade' name="Idade" type='text' ref={inputIdade} maxlength="2" className='numero'/>
+                <div className='inputContainer'>
+                  <label>User</label>
+                  <input placeholder='U_ser' name="User" type='text'ref={inputUser}/>
+                </div>
+                <div className='inputContainer'>
+                  <label>Senha</label>
+                  <div className='senhaContainer'>
+                      <input placeholder='ex@1234' name="Senha" type='password'ref={inputSenha} id='senha'/>
+                      <button type='button' onClick={eye}>
+                          <img src={ImageEyeClose} alt="olho da senha" className='imgeye'/>
+                      </button>
+                  </div>
+                </div>
+                <div className='inputContainer'>
+                  <label>Nome</label>
+                  <input placeholder='Erick' name="Nome" type='text'ref={inputNome}/>
+                </div>
               </div>
               <div className='containerSon'>
-              <input placeholder='CPF' name="CPF" type='text' ref={inputCPF} maxLength="14" className='numero' onInput={maskCPF}/>
-              <input placeholder='Telefone' name="Telefone" ref={inputTelefone} maxlength="15" className='numero' onInput={maskTelefone}/>
-              <input placeholder='E-mail' name="Email" type='email' ref={inputEmail}/>
+                <div className='inputContainer'>
+                  <label>Idade</label>
+                  <input placeholder='18' name="Idade" type='text' ref={inputIdade} maxlength="2" className='numero'/>
+                </div>
+                <div className='inputContainer'>
+                  <label>CPF</label>
+                  <input placeholder='123.456.789-09' name="CPF" type='text' ref={inputCPF} maxLength="14" className='numero' onInput={maskCPF}/>
+                </div>
+                <div className='inputContainer'>
+                  <label>Telefone</label>
+                  <input placeholder='(85) 91234-5678' name="Telefone" ref={inputTelefone} maxlength="15" className='numero' onInput={maskTelefone}/>
+                </div>
               </div>
+                <div className='inputContainer'>
+                  <label>E-mail</label>
+                  <input placeholder='nome@exemplo.com' name="Email" type='email' ref={inputEmail}/>
+                </div>
               <button type='button' onClick={postUsers}>Cadastrar</button>
               
             </form>

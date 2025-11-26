@@ -1,7 +1,6 @@
 import{openDb}from'../configDB.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import e from 'express';
 dotenv.config();
 
 
@@ -11,19 +10,23 @@ export async function createTable(){
         db.exec('CREATE TABLE IF NOT EXISTS Usuarios (id INTEGER PRIMARY KEY, usuario TEXT, senha TEXT, nome TEXT, idade INTEGER, cpf CHAR(11), telefone CHAR(11), email TEXT)');
         });
     }catch(err){
-        console.log(mensagem= "Erro ao criar tabela: " + err.message);
+        console.error("Erro ao criar tabela: " + err.message);
     }
 }
 
 export async function insertUsuario(req, res){
     try{
         let user = req.body;
-        openDb().then(db=>{
-            db.run('INSERT INTO Usuarios (usuario, senha, nome, idade, cpf, telefone, email) VALUES (?, ?, ?, ?, ?, ?, ?)', [user.usuario, user.senha, user.nome, user.idade, user.cpf, user.telefone, user.email]);
-        });
-        res.json({
-            "statuscode": 200
-        });
+        if(!user.usuario || !user.senha || !user.nome || !user.idade || !user.cpf || !user.telefone || !user.email){
+            return res.status(400).json({ message: 'Preencha todos os campos obrigatórios' });
+        } else{
+            openDb().then(db=>{
+                db.run('INSERT INTO Usuarios (usuario, senha, nome, idade, cpf, telefone, email) VALUES (?, ?, ?, ?, ?, ?, ?)', [user.usuario, user.senha, user.nome, user.idade, user.cpf, user.telefone, user.email]);
+            });
+            res.json({
+                "statuscode": 200
+            });
+       }
     }catch(err){
         console.log(mensagem= "Erro ao inserir usuário: " + err.message);
     }
@@ -31,14 +34,21 @@ export async function insertUsuario(req, res){
 }
 
 export async function updateUsuario(req, res){
+    
+
     try{
+        
         let user = req.body;
-        openDb().then(db=>{
-            db.run('UPDATE Usuarios SET usuario=?, senha=?, nome = ?, idade = ?, cpf=?, telefone=?, email=? WHERE id = ?', [user.usuario, user.senha, user.nome, user.idade, user.cpf, user.telefone, user.email, user.id]);
-        });
-        res.json({
-            "statuscode": 200
-        }); 
+        if(!user.usuario || !user.senha || !user.nome || !user.idade || !user.cpf || !user.telefone || !user.email || !user.id){
+            return res.status(400).json({ message: 'Preencha todos os campos obrigatórios' });
+        } else{
+             openDb().then(db=>{
+                db.run('UPDATE Usuarios SET usuario=?, senha=?, nome = ?, idade = ?, cpf=?, telefone=?, email=? WHERE id = ?', [user.usuario, user.senha, user.nome, user.idade, user.cpf, user.telefone, user.email, user.id]);
+            });
+            res.json({
+                "statuscode": 200
+            });
+        }
     }catch(err){
         console.log(mensagem= "Erro ao atualizar usuário: " + err.message);
     }  

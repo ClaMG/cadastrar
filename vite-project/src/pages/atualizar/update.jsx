@@ -171,40 +171,40 @@ function Atualizar() {
               
               <div className='containerSon'>
                 <div className='inputContainer'>
-                  <label htmlFor="User">User</label>
-                  <input placeholder='User' name="User" type='text'ref={inputUpUser}/>
+                  <label>User</label>
+                  <input placeholder='U_ser' name="User" type='text'ref={inputUpUser}/>
                 </div>
                 <div className='inputContainer'>
-                  <label htmlFor="Senha">Senha</label>
+                  <label>Senha</label>
                   <div className='senhaContainer'>
-                    <input placeholder='Senha' name="Senha" type='password'ref={inputUpSenha} id='senha'/>
+                    <input placeholder='ex@1234' name="Senha" type='password'ref={inputUpSenha} id='senha'/>
                     <button type='button' onClick={eye}>
                         <img src={ImageEyeClose} alt="olho da senha" className='imgeye'/>
                     </button>
                   </div>
                 </div>
                 <div className='inputContainer'>
-                  <label htmlFor="Nome">Nome</label>
-                  <input placeholder='Nome' name="Nome" type='text'ref={inputUpNome}/>
+                  <label>Nome</label>
+                  <input placeholder='Erick' name="Nome" type='text'ref={inputUpNome}/>
                 </div>
               </div>
               <div className='containerSon'>
                 <div className='inputContainer'>
-                  <label htmlFor="Idade">Idade</label>
-                  <input placeholder='Idade' name="Idade" type='text' ref={inputUpIdade} maxlength="2" className='numero'/>
+                  <label>Idade</label>
+                  <input placeholder='18' name="Idade" type='text' ref={inputUpIdade} maxlength="2" className='numero'/>
                 </div>
                 <div className='inputContainer'>
-                  <label htmlFor="CPF">CPF</label>
-                  <input placeholder='CPF' name="CPF" type='text' ref={inputUpCPF} maxLength="14" className='numero' onInput={maskCPF}/>
+                  <label>CPF</label>
+                  <input placeholder='123.456.789-09' name="CPF" type='text' ref={inputUpCPF} maxLength="14" className='numero' onInput={maskCPF}/>
                 </div>
                 <div className='inputContainer'>
-                  <label htmlFor="Telefone">Telefone</label>
-                  <input placeholder='Telefone' name="Telefone" ref={inputUpTelefone} maxlength="15" className='numero' onInput={maskTelefone}/>
+                  <label>Telefone</label>
+                  <input placeholder='(85) 91234-5678' name="Telefone" ref={inputUpTelefone} maxlength="15" className='numero' onInput={maskTelefone}/>
                 </div>
               </div>
                 <div className='inputContainer'>
-                  <label htmlFor="Email">E-mail</label>
-                  <input placeholder='E-mail' name="Email" type='email' ref={inputUpEmail}/>
+                  <label>E-mail</label>
+                  <input placeholder='nome@exemplo.com' name="Email" type='email' ref={inputUpEmail}/>
                 </div>
               <button type='button' onClick={putUsers}>Atualizar</button>
               
