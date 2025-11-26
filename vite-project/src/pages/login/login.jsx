@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
+import { toast } from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css";
 import '../../css/global.css'
 import { useNavigate } from 'react-router-dom'
 import Imageback from "../../assets/back.svg"
@@ -25,26 +27,17 @@ function Login() {
     }
 
     async function testApi() {
-        const paragrafo = document.getElementById('mensage');
         try {
             await fetch(api.defaults.baseURL);
         } catch (error) {
-            paragrafo.style.display = "block";
-            paragrafo.style.color = "#dc3545";
-            paragrafo.textContent = 'Erro: A API não está respondendo.';
+            toast.error('Erro: A API não está respondendo.')
             
         }
    }
 
     async function loginUser() {
-
-        const paragrafo = document.getElementById('mensage');
-        paragrafo.style.display = "none";
-        
         if (!inputUser.current.value || !inputSenha.current.value) {
-            paragrafo.style.display = "block"; 
-            paragrafo.style.color = "#dc3545";
-            paragrafo.textContent = 'Login invalido - Preencha todos os campos';
+            toast.error('Preencha todos os campos')
         }else{
             
             try{
@@ -55,9 +48,7 @@ function Login() {
 
 
                 if(userFromApi.data.token){
-                    paragrafo.style.display = "block"; 
-                    paragrafo.style.color = "#198754";
-                    paragrafo.textContent = 'Login realizado com sucesso';
+                    toast.success('Login realizado com sucesso')
 
                     localStorage.setItem('token', userFromApi.data.token);//Salva o token no local storage
 
@@ -79,9 +70,7 @@ function Login() {
 
 
             }catch(error){
-                paragrafo.style.display = "block";
-                paragrafo.style.color = "#dc3545";
-                paragrafo.textContent = 'Login falhou - Usuario ou senha incorretos';
+                toast.error('Usuario ou senha incorretos')
             }
         }
         testApi()
@@ -119,8 +108,6 @@ return(
             
             <button type='button' onClick={loginUser}>Login</button>
         </form>
-
-        <p id='mensage'>Carregando...</p>
     </div>
     
     </>

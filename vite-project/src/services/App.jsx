@@ -6,10 +6,15 @@
     import RegisterScreen from '../pages/cadastro/cadastrar';
     import UpdateScreen from '../pages/atualizar/update';
     import LoginScreen from '../pages/login/login';
+    import { ToastContainer } from "react-toastify";
+    import "react-toastify/dist/ReactToastify.css";
+
 
     function App() {
-      return (
+      return (<>
+        <div>
         <BrowserRouter>
+          <ToastContainer />
           <Routes>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/users" element={<UsersScreen />} />
@@ -19,6 +24,8 @@
             <Route path="/atualizar" element={<UpdateScreen />} />
           </Routes>
         </BrowserRouter>
+         </div>
+         </>
       );
     }
 

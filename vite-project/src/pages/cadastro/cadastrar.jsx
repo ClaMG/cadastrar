@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css";
 import Imageback from "../../assets/back.svg"
 import ImageEyeOpen from "../../assets/eyeopen.svg"
 import ImageEyeClose from "../../assets/eyeclose.svg"
@@ -62,20 +64,15 @@ function Cadastrar() {
     
 
    async function testApi() {
-    const paragrafo = document.getElementById('mensage');
     try {
         await fetch(api.defaults.baseURL);
     } catch (error) {
-        paragrafo.style.display = "block";
-        paragrafo.style.color = "#dc3545";
-        paragrafo.textContent = 'Erro: A API não está respondendo.';
+      toast.error('Erro: A API não está respondendo.')
         
     }
    }
   
   async function postUsers() {
-      const paragrafo = document.getElementById('mensage');
-      paragrafo.style.display = "none";
 
       const userFromApi = await api.get('/users')//puxa da api
       const userExists = userFromApi.data.some(user => user.usuario === inputUser.current.value);
@@ -86,17 +83,11 @@ function Cadastrar() {
 
 
     if (!inputUser.current.value || !inputSenha.current.value || !inputNome.current.value || !inputIdade.current.value || !inputCPF.current.value || !inputTelefone.current.value || !inputEmail.current.value) {
-      paragrafo.style.display = "block";  
-      paragrafo.style.color = "#dc3545";
-        paragrafo.textContent = 'Cadastro invalido - Preencha todos os campos';
+       toast.error('Preencha todos os campos')
     }else if(userExists){
-      paragrafo.style.display = "block"; 
-       paragrafo.style.color = "#dc3545";
-        paragrafo.textContent = 'Cadastro invalido - Usuario ja existe';
+       toast.error('Usuario ja existe')
     }else if(!verificarEmail){
-      paragrafo.style.display = "block"; 
-       paragrafo.style.color = "#dc3545";
-        paragrafo.textContent = 'Cadastro invalido - E-mail inválido, adicione @ e .com';
+      toast.error('E-mail inválido, adicione @ e .com')
     }
     else{
         const userFromApi = await api.post('/user',{
@@ -109,9 +100,8 @@ function Cadastrar() {
             email: inputEmail.current.value
         })//Envia para api
 
-        paragrafo.style.display = "block"; 
-        paragrafo.style.color = "#198754";
-        paragrafo.textContent = 'Cadastro realizado com sucesso';
+        toast.success('Cadastro realizado com sucesso')
+
         if (inputUser.current) inputUser.current.value = '';
         if (inputSenha.current) inputSenha.current.value = '';
         if (inputNome.current) inputNome.current.value = '';
@@ -192,7 +182,6 @@ async function goToBack() {
               
             </form>
 
-            <p id='mensage'>Carregando...</p>
   
             
         </div>

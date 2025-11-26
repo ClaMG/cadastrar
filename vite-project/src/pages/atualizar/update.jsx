@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css";
 import '../../css/global.css'
 import ImageX from "../../assets/x.svg"
 import ImageEyeOpen from "../../assets/eyeopen.svg"
@@ -59,34 +61,25 @@ function Atualizar() {
     }
 
     async function testApi() {
-    const paragrafo = document.getElementById('mensage');
     try {
         await fetch(api.defaults.baseURL);
     } catch (error) {
-        paragrafo.style.display = "block";
-        paragrafo.style.color = "#dc3545";
-        paragrafo.textContent = 'Erro: A API não está respondendo.';
+        toast.error('Erro: A API não está respondendo.')
         
     }
    }
 
 
   async function putUsers() {
-    const paragrafo = document.getElementById('mensage');
-    paragrafo.style.display = "none";
 
     const email = inputUpEmail.current.value;
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const verificarEmail = regex.test(email);
 
     if (!inputUpUser.current.value || !inputUpSenha.current.value || !inputUpNome.current.value || !inputUpIdade.current.value || !inputUpCPF.current.value || !inputUpTelefone.current.value || !inputUpEmail.current.value) {
-      paragrafo.style.display = "block";  
-      paragrafo.style.color = "#dc3545";
-        paragrafo.textContent = 'Atualização invalida - Preencha todos os campos';
+      toast.error('Preencha todos os campos')
     }else if(!verificarEmail){
-      paragrafo.style.display = "block"; 
-       paragrafo.style.color = "#dc3545";
-        paragrafo.textContent = 'Cadastro invalido - E-mail inválido, adicione @ e .com';
+       toast.error('E-mail inválido, adicione @ e .com')
     }
     else{
       try {
@@ -100,17 +93,13 @@ function Atualizar() {
           email: inputUpEmail.current.value
         })//Envia para api
 
-         paragrafo.style.display = "block";  
-       paragrafo.style.color = "#198754";
-       paragrafo.textContent = 'Atualização realizada com sucesso';
+        toast.success('Atualização realizada com sucesso')
 
         setTimeout(() => {
            goToGet();
         }, 1000);
       } catch (error) {
-         paragrafo.style.display = "block";  
-        paragrafo.style.color = "#dc3545";
-        paragrafo.textContent = 'Erro ao atualizar usuário';
+        toast.error('Erro ao atualizar usuário')
       }
     } 
     testApi()
@@ -181,26 +170,45 @@ function Atualizar() {
               </div>
               
               <div className='containerSon'>
-              <input placeholder='User' name="User" type='text'ref={inputUpUser}/>
-              <div className='senhaContainer'>
-                <input placeholder='Senha' name="Senha" type='password'ref={inputUpSenha} id='senha'/>
-                <button type='button' onClick={eye}>
-                    <img src={ImageEyeClose} alt="olho da senha" className='imgeye'/>
-                </button>
-              </div>
-              <input placeholder='Nome' name="Nome" type='text'ref={inputUpNome}/>
+                <div className='inputContainer'>
+                  <label htmlFor="User">User</label>
+                  <input placeholder='User' name="User" type='text'ref={inputUpUser}/>
+                </div>
+                <div className='inputContainer'>
+                  <label htmlFor="Senha">Senha</label>
+                  <div className='senhaContainer'>
+                    <input placeholder='Senha' name="Senha" type='password'ref={inputUpSenha} id='senha'/>
+                    <button type='button' onClick={eye}>
+                        <img src={ImageEyeClose} alt="olho da senha" className='imgeye'/>
+                    </button>
+                  </div>
+                </div>
+                <div className='inputContainer'>
+                  <label htmlFor="Nome">Nome</label>
+                  <input placeholder='Nome' name="Nome" type='text'ref={inputUpNome}/>
+                </div>
               </div>
               <div className='containerSon'>
-              <input placeholder='Idade' name="Idade" type='text' ref={inputUpIdade} maxlength="2" className='numero'/>
-               <input placeholder='CPF' name="CPF" type='text' ref={inputUpCPF} maxLength="14" className='numero' onInput={maskCPF}/>
-              <input placeholder='Telefone' name="Telefone" ref={inputUpTelefone} maxlength="15" className='numero' onInput={maskTelefone}/>
-              <input placeholder='E-mail' name="Email" type='email' ref={inputUpEmail}/>
+                <div className='inputContainer'>
+                  <label htmlFor="Idade">Idade</label>
+                  <input placeholder='Idade' name="Idade" type='text' ref={inputUpIdade} maxlength="2" className='numero'/>
+                </div>
+                <div className='inputContainer'>
+                  <label htmlFor="CPF">CPF</label>
+                  <input placeholder='CPF' name="CPF" type='text' ref={inputUpCPF} maxLength="14" className='numero' onInput={maskCPF}/>
+                </div>
+                <div className='inputContainer'>
+                  <label htmlFor="Telefone">Telefone</label>
+                  <input placeholder='Telefone' name="Telefone" ref={inputUpTelefone} maxlength="15" className='numero' onInput={maskTelefone}/>
+                </div>
               </div>
+                <div className='inputContainer'>
+                  <label htmlFor="Email">E-mail</label>
+                  <input placeholder='E-mail' name="Email" type='email' ref={inputUpEmail}/>
+                </div>
               <button type='button' onClick={putUsers}>Atualizar</button>
               
             </form>
-
-            <p id='mensage'>Resposta</p>
             
         </div>
         

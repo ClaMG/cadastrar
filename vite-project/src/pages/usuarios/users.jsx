@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css";
 import '../../css/global.css'
 import '../../css/user.css'
 import Imageback from "../../assets/back.svg"
@@ -13,41 +15,31 @@ function Home(){
     const navigate = useNavigate();
 
     async function testApi() {
-    const paragrafo = document.getElementById('mensage');
     try {
         await fetch(api.defaults.baseURL);
     } catch (error) {
-        paragrafo.style.display = "block";
-        paragrafo.style.color = "#dc3545";
-        paragrafo.textContent = 'Erro: A API não está respondendo.';
+        toast.error('Erro: A API não está respondendo.')
         
     }
    }
 
   async function getIdUser(id) {
-    const paragrafo = document.getElementById('mensage');
-            paragrafo.style.display = "none";
             
             try {
                 const userFromApi = await api.get(`/user/${id}`) 
                 setFilteredUsers([userFromApi.data]) 
             } catch (error) {
-            paragrafo.style.display = "block";
-            paragrafo.style.color = "#dc3545";
-            paragrafo.textContent = 'Erro ao buscar usuário';
+                toast.error('Erro ao buscar usuário')
         }
         testApi()
     }
     
     
     async function deletUsers(id) {
-        const paragrafo = document.getElementById('mensage');
         
         await api.delete(`/user/${id}`)
         
-        paragrafo.style.display = "block";
-        paragrafo.style.color = "#198754";
-        paragrafo.textContent = 'Usuario deletado com sucesso';
+        toast.success('Usuario deletado com sucesso')
         setTimeout(() => {
             navigate('/login');
         }, 1000);
@@ -131,8 +123,6 @@ function Home(){
                 </div>
             </div>
         ))}
-
-        <p id='mensage'>Carregando...</p>
     </div>
     </>
   )

@@ -1,22 +1,26 @@
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react'
 import '../../css/home.css'
 
 function Home(){
     const navigate = useNavigate();
 
-    async function goToGet() {
-        navigate('/users');
-    }
-
     async function goToPush() {
         navigate('/register');
     }
      async function goToLogin() {
-        localStorage.removeItem('token');
-        localStorage.removeItem('isAdmin');
-        localStorage.removeItem('id');
         navigate('/login');
     }
+
+    async function iniciar() {
+         localStorage.removeItem('token');
+        localStorage.removeItem('isAdmin');
+        localStorage.removeItem('id');
+    }
+
+    useEffect(()=>{
+        iniciar()
+      }, [])//executa a função quando carrega a tela
 
     return (
         <div className='home-container'> 

@@ -66,11 +66,20 @@ form, #update {
 
 .senhaContainer{
     position: relative;
-    margin-top: -19px;
+    margin-top: -9px;
 }
 
 .senhaContainer input{
     width: 100%;
+}
+
+.inputContainer input{
+     width: 100%;
+     margin-top: 10px;
+}
+
+.inputContainer label{
+    color: var(--text-dark);
 }
 
 #update {
@@ -324,17 +333,6 @@ form button:hover {
 .card .containerbtn button:last-child:hover .img, 
 .containerpesquisa button .img {
     filter: invert(100%); 
-}
-
-/* ---------------------------------------------------- */
-/* PARAGRAFO */
-/* ---------------------------------------------------- */
-
-#mensage {
-    display: none;
-    font-weight: 600;
-    text-align: center;
-    margin-top: 10px;
 }
 
 

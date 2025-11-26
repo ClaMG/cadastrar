@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css";
 import '../../css/global.css'
 import Imagedelet from "../../assets/delete.svg"
 import Imageupdate from "../../assets/edit.svg"
@@ -13,16 +15,13 @@ function HomeAdm(){
     const [filteredUsers, setFilteredUsers] = useState([])//para filtrar
     const inputPesquisarId = useRef()
     const navigate = useNavigate();
-    const paragrafo = document.getElementById('mensage');
 
     async function testApi() {
-    const paragrafo = document.getElementById('mensage');
+
     try {
         await fetch(api.defaults.baseURL);
     } catch (error) {
-        paragrafo.style.display = "block";
-        paragrafo.style.color = "#dc3545";
-        paragrafo.textContent = 'Erro: A API não está respondendo.';
+      toast.error('Erro: A API não está respondendo.')
         
     }
    }
@@ -39,29 +38,19 @@ function HomeAdm(){
 
     try {
       await api.delete(`/user/${id}`)
-      paragrafo.style.display = "block";
-      paragrafo.style.color = "#198754";
-      paragrafo.textContent = 'Usuário deletado com sucesso';
+      toast.success('Usuário deletado com sucesso')
     }catch (error) {
-      paragrafo.style.display = "block";
-      paragrafo.style.color = "#dc3545";
-      paragrafo.textContent = 'Erro ao deletar usuário';
+      toast.error('Erro ao deletar usuário')
     }
     
 
     getUsers()
     if (inputPesquisarId.current) inputPesquisarId.current.value = '';
-   
-    setTimeout(() => {
-       paragrafo.style.display = "none";
-    }, 1000);
 
     testApi()
   }
 
   async function getIdUser(id) {
-    
-    paragrafo.style.display = "none";
 
     const userFromApiGet = await api.get('/users')//puxa da api
     const userExists = userFromApiGet.data.some(user => user.id == id);
@@ -72,9 +61,7 @@ function HomeAdm(){
       const userFromApi = await api.get(`/user/${id}`) 
       setFilteredUsers([userFromApi.data])
     }else{
-      paragrafo.style.display = "block";
-      paragrafo.style.color = "#dc3545";
-      paragrafo.textContent = 'Usuário não encontrado';
+      toast.error('Usuário não encontrado')
       getUsers()
     }
     testApi()
@@ -141,8 +128,6 @@ function HomeAdm(){
                 </button>
             </div>
         </form>
-
-        <p id='mensage'>Carregando...</p>
 
         { filteredUsers.map((user) => ( 
             <div key={user.id} className='card' id='todos'>
