@@ -10,7 +10,7 @@ import api from '../../services/api'
 
 function Login() { 
     const inputUser = useRef()
-    const inputSenha = useRef()
+    const inputEmail = useRef()
     const navigate = useNavigate();
 
     async function eye() {
@@ -101,7 +101,7 @@ return(
 
             
             <input placeholder='User' name="User" type='text'ref={inputUser}/>
-            <input placeholder='Senha' name="Senha" type='password'ref={inputSenha} id='senha'/>
+            <input placeholder='Senha' name="Senha" type='text' ref={inputEmail}/>
             
             <button type='button' onClick={loginUser}>Enviar Codigo</button>
         </form>
