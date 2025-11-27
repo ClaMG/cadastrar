@@ -79,8 +79,10 @@ function Login() {
     
 
 async function goToBack() {
-    navigate(`/`);
+    navigate(`/login`);
 }
+
+
 
 useEffect(()=>{
     testApi()
@@ -89,9 +91,9 @@ useEffect(()=>{
 return(
     <>
     <div className='container'>
-        <form action="" id='login'>
+        <form action="" className='menor'>
             <div className='containertitle'>
-                <h1>Login</h1>
+                <h1>Recuperar Senha</h1>
                 <button onClick={goToBack}>
                     <img src={Imageback} className='img rodar' />
                 </button>
@@ -99,14 +101,9 @@ return(
 
             
             <input placeholder='User' name="User" type='text'ref={inputUser}/>
-            <div className='senhaContainer'>
             <input placeholder='Senha' name="Senha" type='password'ref={inputSenha} id='senha'/>
-                <button type='button' onClick={eye}>
-                    <img src={ImageEyeClose} alt="olho da senha" className='imgeye'/>
-                </button>
-            </div>
             
-            <button type='button' onClick={loginUser}>Login</button>
+            <button type='button' onClick={loginUser}>Enviar Codigo</button>
         </form>
     </div>
     

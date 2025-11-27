@@ -166,7 +166,7 @@ form input:focus {
     background-color: #333333;
 }
 
-#login{
+.menor{
     max-width: 400px;
 }
 
@@ -305,6 +305,16 @@ form button:hover {
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(240deg) brightness(100%) contrast(100%);
     transition: filter 0.3s;
 }
+
+#btnsenha{
+    background-color: transparent;
+    box-shadow: none;
+    transition: none;
+    color: var(--text-dark);
+    text-decoration: underline;
+    transform: none;
+}
+
 
 .imgeye{
     width: 20px; 

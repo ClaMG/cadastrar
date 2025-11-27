@@ -116,7 +116,6 @@ function Atualizar() {
 
         const userFromApi = await api.get(`/user/${id}`)
         inputUpUser.current.value = userFromApi.data.usuario;
-        //inputUpSenha.current.value = userFromApi.data.senha;
         inputUpNome.current.value = userFromApi.data.nome;
         inputUpIdade.current.value = userFromApi.data.idade;
         inputUpCPF.current.value = userFromApi.data.cpf;

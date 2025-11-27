@@ -77,6 +77,7 @@ function Cadastrar() {
 
       const userFromApi = await api.get('/users')//puxa da api
       const userExists = userFromApi.data.some(user => user.usuario === inputUser.current.value);
+      const emailExists = userFromApi.data.some(user => user.email === inputEmail.current.value);
 
       const email = inputEmail.current.value;
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -85,10 +86,12 @@ function Cadastrar() {
 
     if (!inputUser.current.value || !inputSenha.current.value || !inputNome.current.value || !inputIdade.current.value || !inputCPF.current.value || !inputTelefone.current.value || !inputEmail.current.value) {
        toast.error('Preencha todos os campos')
-    }else if(userExists){
-       toast.error('Usuario ja existe')
     }else if(!verificarEmail){
       toast.error('E-mail inválido, adicione @ e .com')
+    }else if(userExists){
+       toast.error('Usuario ja existe')
+    }else if(emailExists){
+       toast.error('Email ja cadastrado')
     }
     else{
         const userFromApi = await api.post('/user',{
@@ -170,7 +173,7 @@ async function goToBack() {
                 </div>
                 <div className='inputContainer'>
                   <label>Senha</label>
-                  <div className='senhaContainer'>
+                  <div className='senhaContainer' >
                       <input placeholder='ex@1234' name="Senha" type='password'ref={inputSenha} id='senha'/>
                       <button type='button' onClick={eye}>
                           <img src={ImageEyeClose} alt="olho da senha" className='imgeye'/>
