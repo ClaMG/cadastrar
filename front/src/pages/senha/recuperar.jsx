@@ -4,27 +4,12 @@ import "react-toastify/dist/ReactToastify.css";
 import '../../css/global.css'
 import { useNavigate } from 'react-router-dom'
 import Imageback from "../../assets/back.svg"
-import ImageEyeOpen from "../../assets/eyeopen.svg"
-import ImageEyeClose from "../../assets/eyeclose.svg"
 import api from '../../services/api'
 
 function Login() { 
     const inputUser = useRef()
     const inputEmail = useRef()
     const navigate = useNavigate();
-
-    async function eye() {
-        const senhaInput = document.getElementById('senha');
-        const eyeImg = document.querySelector('.imgeye');
-
-        if (senhaInput.type === 'password') {
-            senhaInput.type = 'text';
-            eyeImg.src = ImageEyeOpen; 
-        } else {
-            senhaInput.type = 'password';
-            eyeImg.src = ImageEyeClose; 
-        }
-    }
 
     async function testApi() {
         try {
@@ -35,42 +20,20 @@ function Login() {
         }
    }
 
-    async function loginUser() {
-        if (!inputUser.current.value || !inputSenha.current.value) {
+    async function enviarcodigo() {
+        if (!inputUser.current.value || !inputEmail.current.value) {
             toast.error('Preencha todos os campos')
         }else{
             
             try{
-                const userFromApi = await api.post('/login',{
+                const userFromApi = await api.post('/codigo',{
                     usuario: inputUser.current.value,
-                    senha: inputSenha.current.value,
+                    email: inputEmail.current.value,
                 })//Envia para api
 
-
-                if(userFromApi.data.token){
-                    toast.success('Login realizado com sucesso')
-
-                    localStorage.setItem('token', userFromApi.data.token);//Salva o token no local storage
-
-                    if(inputUser.current.value === 'admin'){
-                        localStorage.setItem('isAdmin', 'true');
-                        setTimeout(() => {
-                            navigate('/usersAdm');
-                        }, 1000);
-                    }else{
-                        localStorage.setItem('isAdmin', 'false');
-                        localStorage.setItem('id', userFromApi.data.payload.id);   
-                        setTimeout(() => {
-                            navigate('/users');
-                        }, 1000);
-                    }
-
-                    
-                }
-
-
+                toast.success('Codigo enviado com sucesso')
             }catch(error){
-                toast.error('Usuario ou senha incorretos')
+                toast.error('Usuario ou Email incorretos')
             }
         }
         testApi()
@@ -101,9 +64,9 @@ return(
 
             
             <input placeholder='User' name="User" type='text'ref={inputUser}/>
-            <input placeholder='Senha' name="Senha" type='text' ref={inputEmail}/>
+            <input placeholder='Email' name="Email" type='text' ref={inputEmail}/>
             
-            <button type='button' onClick={loginUser}>Enviar Codigo</button>
+            <button type='button' onClick={enviarcodigo}>Enviar Codigo</button>
         </form>
     </div>
     

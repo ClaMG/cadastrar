@@ -2,9 +2,21 @@ import{openDb}from'../configDB.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
+import { response } from 'express';
+import nodemailer from 'nodemailer'
 dotenv.config();
 
 const saltRounds = 10;
+
+const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // true 465, false 587
+    auth: {
+        user: 'erickclarkemoura@gmail.com',
+        pass: "pudv uvbn lirv vqwi"
+    }
+});
 
 export async function createTable(){
     try{
@@ -122,7 +134,7 @@ async function getUserByUsername(usuario) {
     try{
         const db = await openDb();
         
-        const query = 'SELECT id, senha FROM Usuarios WHERE usuario = ?'; //Filtra pelo usuario na tabela
+        const query = 'SELECT id, senha, email FROM Usuarios WHERE usuario = ?'; //Filtra pelo usuario na tabela
         const user = await db.get(query, [usuario]); //diz qual o usuario
         
         await db.close();//fecha a conexão com o banco de dados
@@ -134,7 +146,7 @@ async function getUserByUsername(usuario) {
 }
 
 export async function logar(req, res){
-    const secretKey = process.env.JWT_SECRET || 'secretayour_super_secret_key_here';
+    const secretKey = process.env.JWT_SECRET;
     const {usuario, senha} = req.body;
     
     const user = await getUserByUsername(usuario);
@@ -154,6 +166,44 @@ export async function logar(req, res){
     const token = jwt.sign(payload, secretKey, {expiresIn: '1h'});//cria o token
     res.json({token, payload});
     
+}
+export async function codigo(req, res) {
+    const {usuario, email} = req.body;
+
+    const user = await getUserByUsername(usuario);
+
+    if(!user || email != user.email){
+         return res.status(401).json({message: 'Credenciais inválidas'});
+    }
+
+    const tesemail= "clarisse.moura.galdino@gmail.com";
+    const codigo= "1234"
+    try{
+
+        transporter.sendMail({
+            from: 'Site de CRUD',
+            to: tesemail,
+            subject: 'Código para Redefinição de Senha - Ação Necessária',
+            text: 'Prezado(a) usuário(a), Você solicitou a redefinição de sua senha. O código necessário foi enviado para este endereço de e-mail.Insira o código na página de redefinição para continuar.', codigo, 
+            html: `Prezado(a) usuário(a),<br><br>Você solicitou a redefinição de sua senha. O código necessário foi <strong>enviado para este endereço de e-mail</strong>.<br><br>Insira o código na página de redefinição para continuar.<br><br><strong>${codigo}</strong>`
+        })
+        console.log('Email enviado');
+
+        
+
+        res.json({
+            "statuscode": 200
+        });
+
+    }catch(err){
+        console.log('Email não enviado');
+        
+        return res.status(500).json({
+            "statuscode": 500,
+            "message": "Erro ao enviar email. Tente novamente mais tarde."
+        });
+    }
+
 }
 
 export async function autorizarUser(req, res){
