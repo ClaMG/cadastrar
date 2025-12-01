@@ -124,7 +124,6 @@ async function goToBack() {
   }
 
  async function iniciar() {
-  document.getElementById("mensage").style.display = "none";
   const inputs = document.getElementsByClassName('numero'); 
   
 //Para não permitir letras nos inputs de números

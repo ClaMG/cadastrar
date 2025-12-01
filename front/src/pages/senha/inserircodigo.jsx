@@ -6,9 +6,8 @@ import { useNavigate } from 'react-router-dom'
 import Imageback from "../../assets/back.svg"
 import api from '../../services/api'
 
-function Login() { 
-    const inputUser = useRef()
-    const inputEmail = useRef()
+function InserirCodigo() { 
+    const inputCodigo = useRef()
     const navigate = useNavigate();
 
     async function testApi() {
@@ -20,17 +19,18 @@ function Login() {
         }
    }
 
-    async function enviarcodigo() {
+    async function recebercodigo() {
         if (!inputUser.current.value || !inputEmail.current.value) {
             toast.error('Preencha todos os campos')
         }else{
-            
-            try{
-                const userFromApi = await api.post('/codigo',{
-                    usuario: inputUser.current.value,
-                    email: inputEmail.current.value,
-                })//Envia para api
 
+            try{
+                userid =localStorage.getItem('idCode');
+    
+                const userFromApi = await api.post('/codigo',{
+                        userid: userid,
+                        codeconfirm: inputCodigo.current.value,
+                    })//Envia para api
                 toast.success('Codigo enviado com sucesso')
             }catch(error){
                 toast.error('Usuario ou Email incorretos')
@@ -42,13 +42,38 @@ function Login() {
     
 
 async function goToBack() {
-    navigate(`/login`);
+    navigate(`/recuperar`);
+}
+
+async function iniciar() {
+     const inputs = document.getElementsByClassName('numero'); 
+  
+//Para não permitir letras nos inputs de números
+  for (let i = 0; i < inputs.length; i++) {
+        const input = inputs[i]; 
+        input.addEventListener('keydown', function(event) {
+            if (
+                event.key === 'Backspace' ||
+                event.key === 'Delete' ||
+                event.key === 'Tab' ||
+                event.key.includes('Arrow')
+            ) {
+                return; 
+            }
+            
+            const regex = /[a-zA-Z]/;
+            if (regex.test(event.key)) {
+                event.preventDefault();
+            }
+        });
+    }
 }
 
 
 
 useEffect(()=>{
     testApi()
+    iniciar()
   }, [])//executa a função quando carrega a tela
 
 return(
@@ -63,10 +88,9 @@ return(
             </div>
 
             
-            <input placeholder='User' name="User" type='text'ref={inputUser}/>
-            <input placeholder='Email' name="Email" type='text' ref={inputEmail}/>
+            <input placeholder='Codigo' name="Codigo" type='text' ref={inputCodigo} maxlength="6"/>
             
-            <button type='button' onClick={enviarcodigo}>Enviar Codigo</button>
+            <button type='button' onClick={recebercodigo}>Confirmar Codigo</button>
         </form>
     </div>
     
@@ -75,4 +99,4 @@ return(
 
 }
 
-export default Login
+export default InserirCodigo

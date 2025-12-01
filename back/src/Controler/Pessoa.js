@@ -2,12 +2,13 @@ import{openDb}from'../configDB.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
-import { response } from 'express';
 import nodemailer from 'nodemailer'
+import crypto from 'node:crypto'
 dotenv.config();
 
 const saltRounds = 10;
 
+//email
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
@@ -25,9 +26,22 @@ export async function createTable(){
         });
     }catch(err){
         console.error("Erro ao criar tabela: " + err.message);
+        res.status(500).json({ message: "Erro ao criar tabela" });
     }
 }
 
+//codigo
+export async function createTableCode() {
+    try{
+        const db = await openDb();
+        await db.exec('CREATE TABLE IF NOT EXISTS UsuariosCodes (id INTEGER PRIMARY KEY, idUser INTEGER, code CHAR(6), expiresAt INTEGER)');
+    }catch(err){
+        console.error("Erro ao criar tabela UsuariosCodes: " + err.message);
+        res.status(500).json({ message: "Erro ao criar tabela UsuariosCodes" });
+    }
+}
+
+//crud
 export async function insertUsuario(req, res){
     try{
         let user = req.body;
@@ -35,51 +49,50 @@ export async function insertUsuario(req, res){
             return res.status(400).json({ message: 'Preencha todos os campos obrigatórios' });
         } else{
             const hashedPassword = await bcrypt.hash(user.senha, saltRounds);
-            openDb().then(db=>{
-                db.run('INSERT INTO Usuarios (usuario, senha, nome, idade, cpf, telefone, email) VALUES (?, ?, ?, ?, ?, ?, ?)', [user.usuario, hashedPassword, user.nome, user.idade, user.cpf, user.telefone, user.email]);
-            });
-            res.json({
+            const db = await openDb();
+            await db.run('INSERT INTO Usuarios (usuario, senha, nome, idade, cpf, telefone, email) VALUES (?, ?, ?, ?, ?, ?, ?)', [user.usuario, hashedPassword, user.nome, user.idade, user.cpf, user.telefone, user.email]);
+            return res.json({
                 "statuscode": 200
             });
        }
     }catch(err){
-        console.log(mensagem= "Erro ao inserir usuário: " + err.message);
+        console.log("Erro ao inserir usuário: " + err.message);
+        res.status(500).json({ message: "Erro ao inserir usuário" });
     }
      
 }
 
 export async function updateUsuario(req, res){
-    
-
     try{
-        
         let user = req.body;
         if(!user.usuario || !user.senha || !user.nome || !user.idade || !user.cpf || !user.telefone || !user.email || !user.id){
             return res.status(400).json({ message: 'Preencha todos os campos obrigatórios' });
         } else{
 
             const hashedPassword = await bcrypt.hash(user.senha, saltRounds);
-             openDb().then(db=>{
-                db.run('UPDATE Usuarios SET usuario=?, senha=?, nome = ?, idade = ?, cpf=?, telefone=?, email=? WHERE id = ?', [user.usuario, hashedPassword, user.nome, user.idade, user.cpf, user.telefone, user.email, user.id]);
-            });
-            res.json({
+            const db = await openDb();
+            await db.run('UPDATE Usuarios SET usuario=?, senha=?, nome = ?, idade = ?, cpf=?, telefone=?, email=? WHERE id = ?', [user.usuario, hashedPassword, user.nome, user.idade, user.cpf, user.telefone, user.email, user.id]);
+            return res.json({
                 "statuscode": 200
             });
         }
     }catch(err){
-        console.log(mensagem= "Erro ao atualizar usuário: " + err.message);
+        console.log("Erro ao atualizar usuário: " + err.message);
+        res.status(500).json({ message: "Erro ao atualizar usuário." });
     }  
 
 }
 
 export async function selectUsuarios(req, res){
     try{
-        openDb().then(db=>{
-            db.all('SELECT * FROM Usuarios')
-            .then(users=>res.json(users))
-        });
+        const db = await openDb();
+        await db.all('SELECT * FROM Usuarios')
+        return res.json({
+                "statuscode": 200
+            });
     }catch(err){
-        console.log(mensagem= "Erro ao selecionar usuários: " + err.message);
+        console.log("Erro ao selecionar usuários: " + err.message);
+        res.status(500).json({ message: "Erro interno do servidor ao buscar usuário." });
     }
 }
 
@@ -89,15 +102,10 @@ export async function selectUsuario(req, res) {
     try {
       
         const db = await openDb(); 
-
         const user = await db.get('SELECT * FROM Usuarios WHERE id = ?', [id]);
-        
-        
         if (user) {
-            
-            res.json(user);
+            return res.json(user);
         } else {
-        
             res.status(404).json({ message: "Usuário não encontrado." });
         }
 
@@ -115,20 +123,19 @@ export async function deleteUsuario(req, res){
         if(id == 1){
             return res.status(403).json({message: 'Não é permitido deletar o esse usuario'});
         }else{
-            openDb().then(db=>{
-                db.get('DELETE FROM Usuarios WHERE id = ?', [id])
-                .then(user=>res.json(user));
-            });
-            res.json({
+            const db = await openDb();
+            await db.get('DELETE FROM Usuarios WHERE id = ?', [id])
+            return res.json({
                 "statuscode": 200
             });     
         }
     }catch(err){
-        console.log(mensagem= "Erro ao selecionar usuários: " + err.message);
+        console.log( "Erro ao selecionar usuários: " + err.message);
+        res.status(500).json({ message: "Erro ao selecionar usuários" });
     }
 }
 
-
+//logar
 async function getUserByUsername(usuario) {
 
     try{
@@ -167,36 +174,113 @@ export async function logar(req, res){
     res.json({token, payload});
     
 }
-export async function codigo(req, res) {
-    const {usuario, email} = req.body;
 
-    const user = await getUserByUsername(usuario);
+//codigo//
 
-    if(!user || email != user.email){
-         return res.status(401).json({message: 'Credenciais inválidas'});
+async function gerarcodigo(length) {
+  let result = '';
+  const characters = '0123456789';
+  const charactersLength = characters.length;
+  
+  for (let i = 0; i < length; i++) {
+    const randomIndex = crypto.randomInt(charactersLength); 
+    result += characters.charAt(randomIndex);
+  }
+  
+  return result;
+}
+
+async function saveCode(userId, code, expiresAt) {
+    if (!userId || !code) {
+        console.log('UserId ou code faltando.');
     }
 
-    const tesemail= "clarisse.moura.galdino@gmail.com";
-    const codigo= "1234"
-    try{
+    try {
+        const db = await openDb();
+        //adiciona novo
+        await db.run('INSERT INTO UsuariosCodes (idUser, code, expiresAt) VALUES (?, ?, ?)', [userId, code, expiresAt]
+        );
+    } catch (err) {
+        console.error("Erro ao salvar código:", err.message);
+         console.log("Falha na persistência do código de segurança.");
+    }
+}
 
+async function buscarCode(userId) {
+    try {
+        const db = await openDb();
+        // Busca o código
+        const codeRecord = await db.get('SELECT code, expiresAt FROM UsuariosCodes WHERE idUser = ?', [userId]);
+        
+        if (!codeRecord) {
+            return null;
+        }
+        
+        // Verifica se o código expirou
+        if (codeRecord.expiresAt < Date.now()) {
+            console.log(`Código para ${userId} expirado.`);
+            await db.run('DELETE FROM UsuariosCodes WHERE idUser = ?', [userId]); 
+            return null;
+        }
+
+        return codeRecord.code; // Retorna o código válido
+        
+    } catch (err) {
+        console.error("Erro ao buscar código:", err.message);
+         console.log("Falha ao buscar código de segurança.");
+    }
+}
+
+async function deletCode(userId){
+    if (!userId) {
+         console.log('UserId faltando para exclusão.');
+    }
+    try{
+        const db = await openDb();
+        await db.run('DELETE FROM UsuariosCodes WHERE idUser = ?', [userId]);
+    }catch(err){
+        console.error("Erro ao deletar código:", err.message);
+        console.log("Falha ao deletar código.");
+    }
+}
+
+export async function codigo(req, res) {
+    const {usuario, email} = req.body;
+    const time = 10 * 60 * 1000;//10min
+
+    const user = await getUserByUsername(usuario);
+    
+    if(!user || email != user.email){
+        return res.status(401).json({message: 'Credenciais inválidas'});
+    }
+    
+    const tesemail= "clarisse.moura.galdino@gmail.com";//
+    const code = await gerarcodigo(6); 
+    const expiresAt = Date.now() + time;
+    
+    try {
+        await saveCode(user.id, code, expiresAt);
+    } catch (e) {
+        console.error('Erro de persistência:', e.message);
+        return res.status(500).json({
+            "statuscode": 500,
+            "message": "Erro no servidor ao salvar o código de segurança."
+        });
+    }
+
+    try{
         transporter.sendMail({
             from: 'Site de CRUD',
             to: tesemail,
             subject: 'Código para Redefinição de Senha - Ação Necessária',
-            text: 'Prezado(a) usuário(a), Você solicitou a redefinição de sua senha. O código necessário foi enviado para este endereço de e-mail.Insira o código na página de redefinição para continuar.', codigo, 
-            html: `Prezado(a) usuário(a),<br><br>Você solicitou a redefinição de sua senha. O código necessário foi <strong>enviado para este endereço de e-mail</strong>.<br><br>Insira o código na página de redefinição para continuar.<br><br><strong>${codigo}</strong>`
+            text: `Prezado(a) usuário(a), Você solicitou a redefinição de sua senha. O código necessário foi enviado para este endereço de e-mail e será valido por 10min .Insira o código na página de redefinição para continuar. ${codigo}`, 
+            html: `Prezado(a) usuário(a),<br><br>Você solicitou a redefinição de sua senha. O código necessário foi <strong>enviado para este endereço de e-mail</strong> e será valido por 10min.<br><br>Insira o código na página de redefinição para continuar.<br><br><strong>${codigo}</strong>`
         })
-        console.log('Email enviado');
-
-        
-
-        res.json({
+        res.json(user.id,{
             "statuscode": 200
         });
 
     }catch(err){
-        console.log('Email não enviado');
         
         return res.status(500).json({
             "statuscode": 500,
@@ -204,6 +288,49 @@ export async function codigo(req, res) {
         });
     }
 
+}
+
+export async function confirmarCodigo(req, res) {
+
+    try {
+        const {userid, codeconfirm} = req.body
+
+       if (!userid || !codeconfirm) {
+            return res.status(400).json({
+                "statuscode": 400,
+                "message": "ID do usuário e código são obrigatórios."
+            });
+        }
+
+        const savedCode = await buscarCode(userid);
+
+         if (!savedCode) {
+            return res.status(401).json({
+                "statuscode": 401,
+                "message": "Código inválido ou expirado. Gere um novo."
+            });
+        }
+
+        if (codeconfirm === savedCode) {
+            await deletCode(userid); 
+            return res.json({
+                "statuscode": 200,
+                "message": "Código confirmado com sucesso."
+            });
+        } else {
+            // Código não corresponde
+            return res.status(401).json({
+                "statuscode": 401,
+                "message": "Código de confirmação incorreto."
+            });
+        }
+        
+    } catch (error) {
+         res.json({
+                "statuscode": 500
+            });
+    }
+        
 }
 
 export async function autorizarUser(req, res){

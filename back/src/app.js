@@ -3,9 +3,10 @@ import fs from 'fs';
 import https from 'https';
 import cors from 'cors';
 
-import {createTable} from './Controler/Pessoa.js';
+import {createTable, createTableCode} from './Controler/Pessoa.js';
 
 createTable();
+createTableCode();
 
 const app = express();
 app.use(express.json());

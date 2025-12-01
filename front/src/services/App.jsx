@@ -6,7 +6,8 @@
     import RegisterScreen from '../pages/cadastro/cadastrar';
     import UpdateScreen from '../pages/atualizar/update';
     import LoginScreen from '../pages/login/login';
-    import SenhaScreen from '../pages/senha/recuperar';
+    import SenhaEmailScreen from '../pages/senha/enviaremail';
+    import SenhaCodigoScreen from '../pages/senha/inserircodigo';
     import { ToastContainer } from "react-toastify";
     import "react-toastify/dist/ReactToastify.css";
 
@@ -23,7 +24,8 @@
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
             <Route path="/atualizar" element={<UpdateScreen />} />
-            <Route path="/recuperar" element={<SenhaScreen />} />
+            <Route path="/recuperar" element={<SenhaEmailScreen />} />
+            <Route path="/codigo" element={<SenhaCodigoScreen />} />
           </Routes>
         </BrowserRouter>
          </div>

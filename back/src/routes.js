@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {insertUsuario, updateUsuario, selectUsuarios, selectUsuario, deleteUsuario, autorizarUser, logar, codigo} from './Controler/Pessoa.js';
+import {insertUsuario, updateUsuario, selectUsuarios, selectUsuario, deleteUsuario, autorizarUser, logar, codigo, confirmarCodigo} from './Controler/Pessoa.js';
 
 import { authToken } from './authToken.js';
 
@@ -24,5 +24,6 @@ router.delete('/user/:id', deleteUsuario);//Deleção de uma pessoa
 router.get('/protected',authToken, autorizarUser);//Rota protegida
 router.post('/login', logar);//Rota de login
 router.post('/codigo', codigo);//Rota de login
+router.post('/codigoconfirma', confirmarCodigo);//Rota de login
 
 export default router;
