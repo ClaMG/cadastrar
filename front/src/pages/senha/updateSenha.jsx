@@ -11,6 +11,7 @@ import api from '../../services/api'
 function AtualizarSenha() {
 
   const inputUpSenha = useRef()
+  const inputUpSenhaConfirm = useRef()
   const navigate = useNavigate()
 
     async function testApi() {
@@ -22,23 +23,39 @@ function AtualizarSenha() {
     }
    }
 
-   async function eye() {
-           const senhaInput = document.getElementById('senha');
-           const eyeImg = document.querySelector('.imgeye');
-   
-           if (senhaInput.type === 'password') {
-               senhaInput.type = 'text';
-               eyeImg.src = ImageEyeOpen; 
-           } else {
-               senhaInput.type = 'password';
-               eyeImg.src = ImageEyeClose; 
-           }
-       }
+   async function eyesenha() {
+        const senhaInput = document.getElementById('senha');
+        const eyeImgSenha = document.querySelector('#imgeye1');
+
+        if (senhaInput.type === 'password') {
+            senhaInput.type = 'text';
+            eyeImgSenha.src = ImageEyeOpen; 
+        } else {
+            senhaInput.type = 'password';
+            eyeImgSenha.src = ImageEyeClose; 
+        }
+
+    }
+   async function eyeConfirm() {
+        const senhaInput = document.getElementById('confirm');
+        const eyeImgSenha = document.querySelector('#imgeye2');
+
+        if (senhaInput.type === 'password') {
+            senhaInput.type = 'text';
+            eyeImgSenha.src = ImageEyeOpen; 
+        } else {
+            senhaInput.type = 'password';
+            eyeImgSenha.src = ImageEyeClose; 
+        }
+
+    }
 
   async function putSenha() {
 
-    if (!inputUpSenha.current.value) {
-      toast.error('Preencha o campo')
+    if (!inputUpSenha.current.value || !inputUpSenhaConfirm.current.value) {
+      toast.error('Preencha todos os campos')
+    }else if(inputUpSenha.current.value !== inputUpSenhaConfirm.current.value){
+       toast.error('Senha não foi confirmada corretamente')
     }
     else{
         const id = localStorage.getItem('idCode');
@@ -87,11 +104,20 @@ useEffect(()=>{
               </div>
                 <div className='inputContainer'>
                   <label>Senha</label>
-                  <div className='senhaContainer'>
-                    <input placeholder='ex@1234' name="Senha" type='password'ref={inputUpSenha} id='senha'/>
-                    <button type='button' onClick={eye}>
-                        <img src={ImageEyeClose} alt="olho da senha" className='imgeye'/>
-                    </button>
+                  <div className='senhaContainer' >
+                      <input placeholder='ex@1234' name="Senha" type='password'ref={inputUpSenha} id='senha'/>
+                      <button type='button' onClick={eyesenha}>
+                          <img src={ImageEyeClose} alt="olho da senha" className='imgeye' id='imgeye1'/>
+                      </button>
+                  </div>
+                </div>
+                <div className='inputContainer'>
+                  <label>Confirmar Senha</label>
+                  <div className='senhaContainer' >
+                      <input placeholder='ex@1234' name="ConfirmaSenha" type='password'ref={inputUpSenhaConfirm} id='confirm'/>
+                      <button type='button' onClick={eyeConfirm}>
+                          <img src={ImageEyeClose} alt="olho da senha" className='imgeye' id='imgeye2'/>
+                      </button>
                   </div>
                 </div>
               <button type='button' onClick={putSenha}>Atualizar Senha</button>
