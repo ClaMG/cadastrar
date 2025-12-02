@@ -34,6 +34,10 @@ function InserirCodigo() {
                         codeconfirm: inputCodigo.current.value,
                     })//Envia para api
                 toast.success('Codigo enviado com sucesso')
+
+                setTimeout(() => {
+                    navigate('/updateSenha');
+                }, 1000);
             }catch(error){
                 toast.error('Codigo expirado ou incorreto ')
             }

@@ -16,6 +16,7 @@ function Home(){
          localStorage.removeItem('token');
         localStorage.removeItem('isAdmin');
         localStorage.removeItem('id');
+        localStorage.removeItem('idCode');
     }
 
     useEffect(()=>{

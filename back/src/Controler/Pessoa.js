@@ -229,8 +229,6 @@ async function buscarCode(userId) {
             return null;
         }
 
-        console.log(`Código válido encontrado`);
-
         return codeRecord.code; // Retorna o código válido
         
     } catch (err) {

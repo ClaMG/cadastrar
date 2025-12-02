@@ -49,16 +49,24 @@ function HomeAdm(){
     testApi()
   }
 
-  async function getIdUser(id) {
+  //barra de pesquisa
+  async function getIdUser(input) {
 
     const userFromApiGet = await api.get('/users')//puxa da api
-    const userExists = userFromApiGet.data.some(user => user.id == id);
+    const foundUser = userFromApiGet.data.filter(user => 
+        user.id == input ||
+        user.usuario == input ||
+        user.nome == input ||
+        user.idade == input ||
+        user.cpf == input ||
+        user.telefone == input ||
+        user.email == input
+    );
     
-    if(id == "" || id == null ){
+    if(input == "" || input == null ){
       getUsers() 
-    }else if(userExists){
-      const userFromApi = await api.get(`/user/${id}`) 
-      setFilteredUsers([userFromApi.data])
+    }else if(foundUser.length > 0){
+      setFilteredUsers(foundUser)
     }else{
       toast.error('Usuário não encontrado')
       getUsers()
@@ -70,28 +78,6 @@ function HomeAdm(){
       if(localStorage.getItem('token') == null || localStorage.getItem('isAdmin') === 'false'){
         navigate('/login');
       }
-
-      const inputs = document.getElementsByClassName('numero'); 
-  
-//Para não permitir letras nos inputs de números
-  for (let i = 0; i < inputs.length; i++) {
-        const input = inputs[i]; 
-        input.addEventListener('keydown', function(event) {
-            if (
-                event.key === 'Backspace' ||
-                event.key === 'Delete' ||
-                event.key === 'Tab' ||
-                event.key.includes('Arrow')
-            ) {
-                return; 
-            }
-            
-            const regex = /[a-zA-Z]/;
-            if (regex.test(event.key)) {
-                event.preventDefault();
-            }
-        });
-    }
 
        localStorage.setItem('pageUpdate', 'usersAdm');
     testApi()
@@ -123,7 +109,7 @@ function HomeAdm(){
         </div>
 
         <form action=""  className='containerpesquisa' onSubmit={(e) => e.preventDefault()}>
-            <input placeholder='Id de pesquisa' name="id_pesquisa" type='search' ref={inputPesquisarId} className='numero'/>
+            <input placeholder='Pesquisar' name="id_pesquisa" type='search' ref={inputPesquisarId} className='numero'/>
             <div className='containerbtnPesquisa'>
                 <button onClick={() => {getIdUser(inputPesquisarId.current.value);}}>
                         <img src={Imagelupa} className='img'/>
