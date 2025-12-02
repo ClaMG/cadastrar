@@ -42,9 +42,8 @@ function HomeAdm(){
     }catch (error) {
       toast.error('Erro ao deletar usuário')
     }
-    
-
     getUsers()
+    
     if (inputPesquisarId.current) inputPesquisarId.current.value = '';
 
     testApi()
@@ -55,7 +54,7 @@ function HomeAdm(){
     const userFromApiGet = await api.get('/users')//puxa da api
     const userExists = userFromApiGet.data.some(user => user.id == id);
     
-    if(id == " " || id == null ){
+    if(id == "" || id == null ){
       getUsers() 
     }else if(userExists){
       const userFromApi = await api.get(`/user/${id}`) 
@@ -72,26 +71,29 @@ function HomeAdm(){
         navigate('/login');
       }
 
-       localStorage.setItem('pageUpdate', 'usersAdm');
+      const inputs = document.getElementsByClassName('numero'); 
+  
+//Para não permitir letras nos inputs de números
+  for (let i = 0; i < inputs.length; i++) {
+        const input = inputs[i]; 
+        input.addEventListener('keydown', function(event) {
+            if (
+                event.key === 'Backspace' ||
+                event.key === 'Delete' ||
+                event.key === 'Tab' ||
+                event.key.includes('Arrow')
+            ) {
+                return; 
+            }
+            
+            const regex = /[a-zA-Z]/;
+            if (regex.test(event.key)) {
+                event.preventDefault();
+            }
+        });
+    }
 
-    //Para não permitir letras nos inputs de números
-    const inputs = document.getElementsByClassName('numero');
-    inputs.addEventListener('keydown', function(event) {
-        if (
-            event.key === 'Backspace' ||
-            event.key === 'Delete' ||
-            event.key === 'Tab' ||
-            event.key.includes('Arrow')
-        ) {
-            return;
-        }
-        
-        const regex = /[a-zA-Z]/;
-        
-        if (regex.test(event.key)) {
-            event.preventDefault(); 
-        }
-    });
+       localStorage.setItem('pageUpdate', 'usersAdm');
     testApi()
     
 }

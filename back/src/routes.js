@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {insertUsuario, updateUsuario, selectUsuarios, selectUsuario, deleteUsuario, autorizarUser, logar, codigo, confirmarCodigo} from './Controler/Pessoa.js';
+import {insertUsuario, updateUsuario, selectUsuarios, selectUsuario, deleteUsuario, autorizarUser, logar, codigo, confirmarCodigo, createTable} from './Controler/Pessoa.js';
 
 import { authToken } from './authToken.js';
 

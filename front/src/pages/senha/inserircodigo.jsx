@@ -20,20 +20,22 @@ function InserirCodigo() {
    }
 
     async function recebercodigo() {
-        if (!inputUser.current.value || !inputEmail.current.value) {
-            toast.error('Preencha todos os campos')
+        if (!inputCodigo.current.value) {
+            toast.error('Preencha o campos')
         }else{
+            const userid = localStorage.getItem('idCode');
+            if(!userid){
+                toast.error('Erro no sistema: não conseguimos indentificar seu usuario')
+            }
 
             try{
-                userid =localStorage.getItem('idCode');
-    
-                const userFromApi = await api.post('/codigo',{
+                const userFromApi = await api.post('/codigoconfirma',{
                         userid: userid,
                         codeconfirm: inputCodigo.current.value,
                     })//Envia para api
                 toast.success('Codigo enviado com sucesso')
             }catch(error){
-                toast.error('Usuario ou Email incorretos')
+                toast.error('Codigo expirado ou incorreto ')
             }
         }
         testApi()

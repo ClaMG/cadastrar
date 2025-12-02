@@ -83,7 +83,9 @@ function Atualizar() {
     }
     else{
       try {
+        const id = localStorage.getItem('idToUpdate');
         const userFromApi = await api.put('/user',{
+          id: id,
           usuario: inputUpUser.current.value,
           senha: inputUpSenha.current.value,
           nome: inputUpNome.current.value,

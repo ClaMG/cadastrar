@@ -31,12 +31,14 @@ function EnviarEmail() {
                     email: inputEmail.current.value,
                 })//Envia para api
 
-                localStorage.setItem('idCode', userFromApi.data.id);
-                toast.success('Codigo enviado com sucesso, confira seu email')
+                const idUser = userFromApi.data.userId;
 
+                localStorage.setItem('idCode', idUser);
+                
                 if (inputEmail.current) inputEmail.current.value = '';
                 if (inputUser.current) inputUser.current.value = '';
-
+                
+                toast.success('Codigo enviado com sucesso, confira seu email')
                 setTimeout(() => {
                     navigate('/codigo');
                 }, 1000);
