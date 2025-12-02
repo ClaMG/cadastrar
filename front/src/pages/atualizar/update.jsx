@@ -12,6 +12,7 @@ function Atualizar() {
 
   const inputUpUser = useRef()
   const inputUpSenha = useRef()
+  const inputUpSenhaConfirm = useRef()
   const inputUpNome = useRef()
   const inputUpIdade = useRef()
   const inputUpCPF = useRef()
@@ -47,17 +48,31 @@ function Atualizar() {
     input.value = value;
    }
 
-   async function eye() {
+   async function eyesenha() {
         const senhaInput = document.getElementById('senha');
-        const eyeImg = document.querySelector('.imgeye');
+        const eyeImgSenha = document.querySelector('#imgeye1');
 
         if (senhaInput.type === 'password') {
             senhaInput.type = 'text';
-            eyeImg.src = ImageEyeOpen; 
+            eyeImgSenha.src = ImageEyeOpen; 
         } else {
             senhaInput.type = 'password';
-            eyeImg.src = ImageEyeClose; 
+            eyeImgSenha.src = ImageEyeClose; 
         }
+
+    }
+   async function eyeConfirm() {
+        const senhaInput = document.getElementById('confirm');
+        const eyeImgSenha = document.querySelector('#imgeye2');
+
+        if (senhaInput.type === 'password') {
+            senhaInput.type = 'text';
+            eyeImgSenha.src = ImageEyeOpen; 
+        } else {
+            senhaInput.type = 'password';
+            eyeImgSenha.src = ImageEyeClose; 
+        }
+
     }
 
     async function testApi() {
@@ -76,10 +91,12 @@ function Atualizar() {
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const verificarEmail = regex.test(email);
 
-    if (!inputUpUser.current.value || !inputUpSenha.current.value || !inputUpNome.current.value || !inputUpIdade.current.value || !inputUpCPF.current.value || !inputUpTelefone.current.value || !inputUpEmail.current.value) {
+    if (!inputUpUser.current.value || !inputUpSenha.current.value  || !inputUpSenhaConfirm.current.value || !inputUpNome.current.value || !inputUpIdade.current.value || !inputUpCPF.current.value || !inputUpTelefone.current.value || !inputUpEmail.current.value) {
       toast.error('Preencha todos os campos')
     }else if(!verificarEmail){
        toast.error('E-mail inválido, adicione @ e .com')
+    }else if(inputUpSenha.current.value !== inputUpSenhaConfirm.current.value){
+       toast.error('Senha não foi confirmada corretamente')
     }
     else{
       try {
@@ -177,18 +194,27 @@ function Atualizar() {
                 </div>
                 <div className='inputContainer'>
                   <label>Senha</label>
-                  <div className='senhaContainer'>
-                    <input placeholder='ex@1234' name="Senha" type='password'ref={inputUpSenha} id='senha'/>
-                    <button type='button' onClick={eye}>
-                        <img src={ImageEyeClose} alt="olho da senha" className='imgeye'/>
-                    </button>
+                  <div className='senhaContainer' >
+                      <input placeholder='ex@1234' name="Senha" type='password'ref={inputUpSenha} id='senha'/>
+                      <button type='button' onClick={eyesenha}>
+                          <img src={ImageEyeClose} alt="olho da senha" className='imgeye' id='imgeye1'/>
+                      </button>
                   </div>
                 </div>
+                <div className='inputContainer'>
+                  <label>Confirmar Senha</label>
+                  <div className='senhaContainer' >
+                      <input placeholder='ex@1234' name="ConfirmaSenha" type='password'ref={inputUpSenhaConfirm} id='confirm'/>
+                      <button type='button' onClick={eyeConfirm}>
+                          <img src={ImageEyeClose} alt="olho da senha" className='imgeye' id='imgeye2'/>
+                      </button>
+                  </div>
+                </div>
+              </div>
                 <div className='inputContainer'>
                   <label>Nome</label>
                   <input placeholder='Erick' name="Nome" type='text'ref={inputUpNome}/>
                 </div>
-              </div>
               <div className='containerSon'>
                 <div className='inputContainer'>
                   <label>Idade</label>

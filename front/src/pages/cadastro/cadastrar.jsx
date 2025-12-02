@@ -13,6 +13,7 @@ function Cadastrar() {
 
   const inputUser = useRef()
   const inputSenha = useRef()
+  const inputSenhaConfirm = useRef()
   const inputNome = useRef()
   const inputIdade = useRef()
   const inputCPF = useRef()
@@ -49,17 +50,31 @@ function Cadastrar() {
     input.value = value;
    }
 
-   async function eye() {
+   async function eyesenha() {
         const senhaInput = document.getElementById('senha');
-        const eyeImg = document.querySelector('.imgeye');
+        const eyeImgSenha = document.querySelector('#imgeye1');
 
         if (senhaInput.type === 'password') {
             senhaInput.type = 'text';
-            eyeImg.src = ImageEyeOpen; 
+            eyeImgSenha.src = ImageEyeOpen; 
         } else {
             senhaInput.type = 'password';
-            eyeImg.src = ImageEyeClose; 
+            eyeImgSenha.src = ImageEyeClose; 
         }
+
+    }
+   async function eyeConfirm() {
+        const senhaInput = document.getElementById('confirm');
+        const eyeImgSenha = document.querySelector('#imgeye2');
+
+        if (senhaInput.type === 'password') {
+            senhaInput.type = 'text';
+            eyeImgSenha.src = ImageEyeOpen; 
+        } else {
+            senhaInput.type = 'password';
+            eyeImgSenha.src = ImageEyeClose; 
+        }
+
     }
     
 
@@ -84,7 +99,7 @@ function Cadastrar() {
       const verificarEmail = regex.test(email);
 
 
-    if (!inputUser.current.value || !inputSenha.current.value || !inputNome.current.value || !inputIdade.current.value || !inputCPF.current.value || !inputTelefone.current.value || !inputEmail.current.value) {
+    if (!inputUser.current.value || !inputSenha.current.value || !inputSenhaConfirm.current.value || !inputNome.current.value || !inputIdade.current.value || !inputCPF.current.value || !inputTelefone.current.value || !inputEmail.current.value) {
        toast.error('Preencha todos os campos')
     }else if(!verificarEmail){
       toast.error('E-mail inválido, adicione @ e .com')
@@ -92,6 +107,8 @@ function Cadastrar() {
        toast.error('Usuario ja existe')
     }else if(emailExists){
        toast.error('Email ja cadastrado')
+    }else if(inputSenha.current.value !== inputSenhaConfirm.current.value){
+       toast.error('Senha não foi confirmada corretamente')
     }
     else{
         const userFromApi = await api.post('/user',{
@@ -108,6 +125,7 @@ function Cadastrar() {
 
         if (inputUser.current) inputUser.current.value = '';
         if (inputSenha.current) inputSenha.current.value = '';
+        if (inputSenhaConfirm.current) inputSenhaConfirm.current.value = '';
         if (inputNome.current) inputNome.current.value = '';
         if (inputIdade.current) inputIdade.current.value = '';
         if (inputCPF.current) inputCPF.current.value = '';
@@ -174,16 +192,25 @@ async function goToBack() {
                   <label>Senha</label>
                   <div className='senhaContainer' >
                       <input placeholder='ex@1234' name="Senha" type='password'ref={inputSenha} id='senha'/>
-                      <button type='button' onClick={eye}>
-                          <img src={ImageEyeClose} alt="olho da senha" className='imgeye'/>
+                      <button type='button' onClick={eyesenha}>
+                          <img src={ImageEyeClose} alt="olho da senha" className='imgeye' id='imgeye1'/>
                       </button>
                   </div>
                 </div>
                 <div className='inputContainer'>
+                  <label>Confirmar Senha</label>
+                  <div className='senhaContainer' >
+                      <input placeholder='ex@1234' name="ConfirmaSenha" type='password'ref={inputSenhaConfirm} id='confirm'/>
+                      <button type='button' onClick={eyeConfirm}>
+                          <img src={ImageEyeClose} alt="olho da senha" className='imgeye' id='imgeye2'/>
+                      </button>
+                  </div>
+                </div>
+              </div>
+                <div className='inputContainer'>
                   <label>Nome</label>
                   <input placeholder='Erick' name="Nome" type='text'ref={inputNome}/>
                 </div>
-              </div>
               <div className='containerSon'>
                 <div className='inputContainer'>
                   <label>Idade</label>
