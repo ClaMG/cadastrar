@@ -92,10 +92,6 @@ function Cadastrar() {
 
     try {
       
-      const userFromApi = await api.get('/users')//puxa da api
-      const userExists = userFromApi.data.some(user => user.usuario === inputUser.current.value);
-      const emailExists = userFromApi.data.some(user => user.email === inputEmail.current.value);
-  
       const email = inputEmail.current.value;
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const verificarEmail = regex.test(email);
@@ -107,10 +103,6 @@ function Cadastrar() {
        toast.error('Preencha todos os campos')
     }else if(!verificarEmail){
       toast.error('E-mail inválido, adicione @ e .com')
-    }else if(userExists){
-       toast.error('Usuario ja existe')
-    }else if(emailExists){
-       toast.error('Email ja cadastrado')
     }else if(inputSenha.current.value !== inputSenhaConfirm.current.value){
        toast.error('Senha não foi confirmada corretamente')
     }else if (isNaN(idade) || idade < 1 || idade > 120) {
@@ -145,7 +137,13 @@ function Cadastrar() {
         if (inputEmail.current) inputEmail.current.value = '';
     }
     } catch (error) {
-      toast.error(`Erro ao cadastrar${error}`)
+      if (error.response && error.response.status === 401 && error.response.data.message) {
+                // A mensagem específica (Usuario ja existente ou Email ja existente) vem do backend
+                toast.error(error.response.data.message); 
+            } else {
+                // Erros genéricos de conexão ou outros erros 500
+                toast.error('Erro ao cadastrar. Verifique a API.');
+            }
     }
 
     testApi() 

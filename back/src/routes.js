@@ -16,13 +16,13 @@ router.get('/', (req, res) => {
 
 
 
-router.get('/users', selectUsuarios);//Leitura de todas as pessoas
+router.get('/users', authToken, selectUsuarios);//Leitura de todas as pessoas
 router.get('/user/:id',  authToken, selectUsuario);//Leitura de uma pessoa
 router.put('/user', authToken, updateUsuario);//Atualização dos dados de uma pessoa
-router.post('/user', insertUsuario);//Inserção de uma nova pessoa//Falta
+router.post('/user', insertUsuario);//Inserção de uma nova pessoa
 router.delete('/user/:id',  authToken, deleteUsuario);//Deleção de uma pessoa
 router.post('/login', logar);//Rota de login
 router.post('/codigo', codigo);//Rota de login
-router.post('/codigoconfirma', confirmarCodigo);//Rota de login//fala
+router.post('/codigoconfirma', confirmarCodigo);//Rota de login
 
 export default router;

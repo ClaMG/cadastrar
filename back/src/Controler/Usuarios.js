@@ -107,11 +107,11 @@ export async function insertUsuario(req, res){
         
         if (existingUser) { 
             if (existingUser.usuario === user.usuario) {
-                return res.status(400).json({ message: 'Usuario ja existente' });
+                return res.status(401).json({ message: 'Usuario ja existente' });
             }
             
             if (existingUser.email === user.email) {
-                return res.status(400).json({ message: 'Email ja existente' });
+                return res.status(401).json({ message: 'Email ja existente' });
             }
         }
 
