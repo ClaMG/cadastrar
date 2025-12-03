@@ -138,11 +138,9 @@ function Cadastrar() {
     }
     } catch (error) {
       if (error.response && error.response.status === 401 && error.response.data.message) {
-                // A mensagem específica (Usuario ja existente ou Email ja existente) vem do backend
                 toast.error(error.response.data.message); 
             } else {
-                // Erros genéricos de conexão ou outros erros 500
-                toast.error('Erro ao cadastrar. Verifique a API.');
+                toast.error('Erro ao cadastrar.');
             }
     }
 

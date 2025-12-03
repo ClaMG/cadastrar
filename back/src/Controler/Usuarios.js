@@ -131,11 +131,31 @@ export async function insertUsuario(req, res){
      
 }
 
+async function checkDuplicateUserOnUpdate(id, novoUsuario, novoEmail) {
+    try {
+        const db = await openDb();
+        // A query verifica se existe OUTRO usuário (id != ?) com o mesmo nome OU email
+        const query = 'SELECT usuario, email FROM Usuarios WHERE (usuario = ? OR email = ?) AND id != ?';
+        
+        // Retorna o usuário duplicado (se existir)
+        const user = await db.get(query, [novoUsuario, novoEmail, id]); 
+        return user; 
+    } catch (err) {
+        console.error('Erro ao buscar usuário/email para update:', err);
+        throw new Error('Erro ao verificar dados.');
+    }
+}
+
 export async function updateUsuario(req, res){
     try{
+
+        
+        
         let user = req.body;
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const verificarEmail = regex.test(user.email);
+        const duplicateUser = await checkDuplicateUserOnUpdate(user.id, user.usuario, user.email);
+
         if(!user || !user.usuario || !user.senha || !user.nome || !user.idade || !user.cpf || !user.telefone || !user.email || !user.id){
             return res.status(400).json({ message: 'Preencha todos os campos' });
         } else if(user.cpf.length != 11){
@@ -146,6 +166,13 @@ export async function updateUsuario(req, res){
             return res.status(400).json({ message: 'Campo Idade preenchido incorretamente' });
         }else if(!verificarEmail){
             return res.status(400).json({ message: 'Campo email preenchido incorretamente' });
+        }else if (duplicateUser) {
+            if (duplicateUser.usuario === user.usuario) {
+                return res.status(401).json({ message: 'Nome de usuário já existe.' });
+            }
+            if (duplicateUser.email === user.email) {
+                return res.status(401).json({ message: 'E-mail já existe.' });
+            }
         }
         else{
 

@@ -87,9 +87,12 @@ function Atualizar() {
 
   async function putUsers() {
 
+
+    try {
     const email = inputUpEmail.current.value;
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const verificarEmail = regex.test(email);
+      const id = localStorage.getItem('idToUpdate');
 
     if (!inputUpUser.current.value || !inputUpSenha.current.value  || !inputUpSenhaConfirm.current.value || !inputUpNome.current.value || !inputUpIdade.current.value || !inputUpCPF.current.value || !inputUpTelefone.current.value || !inputUpEmail.current.value) {
       toast.error('Preencha todos os campos')
@@ -99,16 +102,19 @@ function Atualizar() {
        toast.error('Senha não foi confirmada corretamente')
     }
     else{
-      try {
-        const id = localStorage.getItem('idToUpdate');
+      
+        
+      const cpfLimpo = inputUpCPF.current.value.replace(/\D/g, ''); 
+        const telefoneLimpo = inputUpTelefone.current.value.replace(/\D/g, '');
+
         const userFromApi = await api.put('/user',{
           id: id,
           usuario: inputUpUser.current.value,
           senha: inputUpSenha.current.value,
           nome: inputUpNome.current.value,
           idade: inputUpIdade.current.value,
-          cpf: inputUpCPF.current.value,
-          telefone: inputUpTelefone.current.value,
+          cpf: cpfLimpo,
+          telefone: telefoneLimpo,
           email: inputUpEmail.current.value
         })//Envia para api
 
@@ -117,10 +123,15 @@ function Atualizar() {
         setTimeout(() => {
            goToGet();
         }, 1000);
-      } catch (error) {
-        toast.error('Erro ao atualizar usuário')
-      }
+      
     } 
+    } catch (error) {
+      if (error.response && error.response.status === 401 && error.response.data.message) {
+            toast.error(error.response.data.message); 
+        } else {
+            toast.error('Erro ao atualizar usuário.');
+        }
+    }
     testApi()
   }
 
