@@ -24,7 +24,7 @@ function EnviarEmail() {
         if (!inputUser.current.value || !inputEmail.current.value) {
             toast.error('Preencha todos os campos')
         }else{
-            
+            const toastId = toast.loading('Carregando')
             try{
                 const userFromApi = await api.post('/codigo',{
                     usuario: inputUser.current.value,
@@ -38,12 +38,24 @@ function EnviarEmail() {
                 if (inputEmail.current) inputEmail.current.value = '';
                 if (inputUser.current) inputUser.current.value = '';
                 
-                toast.success('Codigo enviado com sucesso, confira seu email')
+                
+                toast.update(toastId, { 
+                    render: "Codigo enviado com sucesso, confira seu email", 
+                    type: "success",                           
+                    isLoading: false,                          
+                    autoClose: 1000                           
+                });
                 setTimeout(() => {
                     navigate('/codigo');
                 }, 1000);
             }catch(error){
-                toast.error('Usuario ou Email incorretos')
+                toast.update(toastId, { 
+                    render: "Usuario ou Email incorretos", 
+                    type: "error",                          
+                    isLoading: false,                         
+                    autoClose: 5000                        
+                });
+                
             }
         }
         testApi()
