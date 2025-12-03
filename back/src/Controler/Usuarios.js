@@ -1,11 +1,9 @@
 import{openDb}from'../configDB.js';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer'
 import crypto from 'node:crypto'
-dotenv.config();
-
+const secretKey = process.env.JWT_SECRET || "gudUMKvWUayk9wWgVeB9/xvnd1zfvWxXfm07MurfmX1G15bPcTmc";
 const saltRounds = 10;
 
 //email
@@ -42,17 +40,88 @@ export async function createTableCode() {
 }
 
 //crud
+export async function selectUsuarios(req, res){
+    
+    try{
+        const db = await openDb();
+         const users = await db.all('SELECT id, usuario, nome, idade, cpf, telefone, email FROM Usuarios');
+        return res.json(users);
+    }catch(err){
+        console.log("Erro ao selecionar usuários: " + err.message);
+        res.status(500).json({ message: "Erro interno do servidor ao buscar usuário." });
+    }
+}
+
+export async function selectUsuario(req, res) {
+    let id = req.params.id;
+
+    try {
+      
+        const db = await openDb(); 
+        const user = await db.get('SELECT usuario, nome, idade, cpf, telefone, email FROM Usuarios WHERE id = ?', [id]);
+        if (user) {
+            return res.json(user);
+        } else {
+            res.status(404).json({ message: "Usuário não encontrado." });
+        }
+
+    } catch (err) {
+        console.error("Erro ao selecionar usuário:", err.message);
+        
+        res.status(500).json({ message: "Erro interno do servidor ao buscar usuário." });
+    }
+}
+
+async function getUserByUsernameOrEmail(usuario, email) {
+    try {
+        const db = await openDb();
+        const query = 'SELECT usuario, email FROM Usuarios WHERE usuario = ? OR email = ?';
+        // Procura se já existe um usuário com o mesmo nome OU com o mesmo email
+        const user = await db.get(query, [usuario, email]); 
+        return user; // Retorna o objeto do usuário ou 'undefined' se não encontrar
+    } catch (err) {
+        console.error('Erro ao buscar usuário/email:', err);
+        throw new Error('Erro ao verificar usuário ou email.');
+    }
+}
+
 export async function insertUsuario(req, res){
     try{
         let user = req.body;
-        if(!user.usuario || !user.senha || !user.nome || !user.idade || !user.cpf || !user.telefone || !user.email){
-            return res.status(400).json({ message: 'Preencha todos os campos obrigatórios' });
-        } else{
+
+        const existingUser = await getUserByUsernameOrEmail(user.usuario, user.email);
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const verificarEmail = regex.test(user.email);
+
+        if(!user || !user.usuario || !user.senha || !user.nome || !user.idade || !user.cpf || !user.telefone || !user.email){
+            return res.status(400).json({ message: 'Preencha todos os campos' });
+        }else if(user.cpf.length != 11){
+            return res.status(400).json({ message: 'Campo cpf preenchido incorretamente' });
+        }else if(user.telefone.length != 11){
+            return res.status(400).json({ message: 'Campo telefone preenchido incorretamente' });
+        }else if(user.idade == 0 || user.idade.length >2 || user.idade <1){
+            return res.status(400).json({ message: 'Campo Idade preenchido incorretamente' });
+        }else if(!verificarEmail){
+            return res.status(400).json({ message: 'Campo email preenchido incorretamente' });
+        }
+        
+        if (existingUser) { 
+            if (existingUser.usuario === user.usuario) {
+                return res.status(400).json({ message: 'Usuario ja existente' });
+            }
+            
+            if (existingUser.email === user.email) {
+                return res.status(400).json({ message: 'Email ja existente' });
+            }
+        }
+
+        else{
             const hashedPassword = await bcrypt.hash(user.senha, saltRounds);
             const db = await openDb();
             await db.run('INSERT INTO Usuarios (usuario, senha, nome, idade, cpf, telefone, email) VALUES (?, ?, ?, ?, ?, ?, ?)', [user.usuario, hashedPassword, user.nome, user.idade, user.cpf, user.telefone, user.email]);
             return res.json({
-                "statuscode": 200
+                "statuscode": 200,
+                message: 'Usuario cadastrado com sucesso'
             });
        }
     }catch(err){
@@ -65,9 +134,20 @@ export async function insertUsuario(req, res){
 export async function updateUsuario(req, res){
     try{
         let user = req.body;
-        if(!user.usuario || !user.senha || !user.nome || !user.idade || !user.cpf || !user.telefone || !user.email || !user.id){
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const verificarEmail = regex.test(user.email);
+        if(!user || !user.usuario || !user.senha || !user.nome || !user.idade || !user.cpf || !user.telefone || !user.email || !user.id){
             return res.status(400).json({ message: 'Preencha todos os campos' });
-        } else{
+        } else if(user.cpf.length != 11){
+            return res.status(400).json({ message: 'Campo cpf preenchido incorretamente' });
+        }else if(user.telefone.length != 11){
+            return res.status(400).json({ message: 'Campo telefone preenchido incorretamente' });
+        }else if(user.idade.length <0 || user.idade.length >2){
+            return res.status(400).json({ message: 'Campo Idade preenchido incorretamente' });
+        }else if(!verificarEmail){
+            return res.status(400).json({ message: 'Campo email preenchido incorretamente' });
+        }
+        else{
 
             const hashedPassword = await bcrypt.hash(user.senha, saltRounds);
             const db = await openDb();
@@ -85,48 +165,21 @@ export async function updateUsuario(req, res){
 
 }
 
-export async function selectUsuarios(req, res){
-    try{
-        const db = await openDb();
-         const users = await db.all('SELECT id, usuario, nome, idade, cpf, telefone, email FROM Usuarios');
-        return res.json(users);
-    }catch(err){
-        console.log("Erro ao selecionar usuários: " + err.message);
-        res.status(500).json({ message: "Erro interno do servidor ao buscar usuário." });
-    }
-}
-
-export async function selectUsuario(req, res) {
-    let id = req.params.id;
-
-    try {
-      
-        const db = await openDb(); 
-        const user = await db.get('SELECT id, usuario, nome, idade, cpf, telefone, email FROM Usuarios WHERE id = ?', [id]);
-        if (user) {
-            return res.json(user);
-        } else {
-            res.status(404).json({ message: "Usuário não encontrado." });
-        }
-
-    } catch (err) {
-        console.error("Erro ao selecionar usuário:", err.message);
-        
-        res.status(500).json({ message: "Erro interno do servidor ao buscar usuário." });
-    }
-}
-
 export async function deleteUsuario(req, res){
     try{
         let id = req.params.id;
 
         if(id == 1){
            return res.status(403).json({message: 'Não é permitido deletar o usuário de ID 1'}); 
-        }else{
+        }else if(!id){
+             return res.status(403).json({message: 'Preencha o camp de id'});
+        }
+        else{
             const db = await openDb();
             await db.get('DELETE FROM Usuarios WHERE id = ?', [id])
             return res.json({
-                "statuscode": 200
+                "statuscode": 200,
+                message: "Usuário deletado com sucesso"
             });     
         }
     }catch(err){
@@ -153,7 +206,6 @@ async function getUserByUsername(usuario) {
 }
 
 export async function logar(req, res){
-    const secretKey = process.env.JWT_SECRET || "gudUMKvWUayk9wWgVeB9/xvnd1zfvWxXfm07MurfmX1G15bPcTmc";
     const {usuario, senha} = req.body;
     
     const user = await getUserByUsername(usuario);
@@ -255,6 +307,17 @@ export async function codigo(req, res) {
     const {usuario, email} = req.body;
     const time = 10 * 60 * 1000;//10min
 
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const verificarEmail = regex.test(email);
+
+    if(!usuario || !email){
+        return res.status(401).json({message: 'Preencha todos os campos'});
+    }
+    if(!verificarEmail){
+        return res.status(401).json({message: 'Campo email preenchido incorretamente'});
+    }
+
+
     const user = await getUserByUsername(usuario);
     
     
@@ -262,11 +325,11 @@ export async function codigo(req, res) {
     const normalizedUserEmail = user && user.email ? user.email.trim().toLowerCase() : '';
 
     if (!user) {
-         return res.status(401).json({message: 'Credenciais inválidas'});
+         return res.status(401).json({message: 'Usuario ou email não existem'});
     }
 
     if (normalizedRequestEmail !== normalizedUserEmail) {
-        return res.status(401).json({message: 'Credenciais inválidas'});
+        return res.status(401).json({message: 'Usuario ou email não existem'});
     }
     
     const code = gerarcodigo(6); 
@@ -279,7 +342,7 @@ export async function codigo(req, res) {
 
         return res.status(500).json({
             "statuscode": 500,
-            "message": "Erro no servidor ao salvar o código de segurança."
+            "message": "Erro no servidor: erro ao salvar o código de segurança."
         });
     }
 
@@ -294,7 +357,8 @@ export async function codigo(req, res) {
        
         return res.json({
             "userId": user.id,
-            "statuscode": 200
+            "statuscode": 200,
+            message: "Email enviado com sucesso"
         });
 
     }catch(err){
@@ -315,7 +379,7 @@ export async function confirmarCodigo(req, res) {
             console.log(`ID do usuário ou código ausente.`);
             return res.status(400).json({
                 "statuscode": 400,
-                "message": "ID do usuário e código são obrigatórios."
+                "message": "Preencha todos os campos"
             });
         }
 
@@ -351,8 +415,4 @@ export async function confirmarCodigo(req, res) {
             });
     }
         
-}
-
-export async function autorizarUser(req, res){
-     res.json({message: 'Acesso concedido a rota protegida'}); 
 }

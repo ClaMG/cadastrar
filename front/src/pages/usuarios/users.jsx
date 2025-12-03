@@ -4,7 +4,7 @@ import { toast } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
 import '../../css/global.css'
 import '../../css/user.css'
-import Imageback from "../../assets/back.svg"
+import Imageback from "../../assets/out.svg"
 import Imageupdate from "../../assets/edit.svg"
 import Imagedelet from "../../assets/delete.svg"
 import api from '../../services/api'

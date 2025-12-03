@@ -2,9 +2,10 @@ import express from 'express';
 import fs from 'fs';
 import https from 'https';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import {createTable, createTableCode} from './Controler/Usuarios.js';
 
-import {createTable, createTableCode} from './Controler/Pessoa.js';
-
+dotenv.config();
 createTable();
 createTableCode();
 

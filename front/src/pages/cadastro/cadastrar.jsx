@@ -90,15 +90,19 @@ function Cadastrar() {
   
   async function postUsers() {
 
+    try {
+      
       const userFromApi = await api.get('/users')//puxa da api
       const userExists = userFromApi.data.some(user => user.usuario === inputUser.current.value);
       const emailExists = userFromApi.data.some(user => user.email === inputEmail.current.value);
-
+  
       const email = inputEmail.current.value;
       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const verificarEmail = regex.test(email);
+  
+      const idade = parseInt(inputIdade.current.value);
 
-
+  
     if (!inputUser.current.value || !inputSenha.current.value || !inputSenhaConfirm.current.value || !inputNome.current.value || !inputIdade.current.value || !inputCPF.current.value || !inputTelefone.current.value || !inputEmail.current.value) {
        toast.error('Preencha todos os campos')
     }else if(!verificarEmail){
@@ -109,20 +113,28 @@ function Cadastrar() {
        toast.error('Email ja cadastrado')
     }else if(inputSenha.current.value !== inputSenhaConfirm.current.value){
        toast.error('Senha não foi confirmada corretamente')
+    }else if (isNaN(idade) || idade < 1 || idade > 120) {
+    toast.error('Idade inválida. A idade deve ser um número entre 1 e 120.');
     }
+
     else{
+
+        const cpfLimpo = inputCPF.current.value.replace(/\D/g, ''); 
+        const telefoneLimpo = inputTelefone.current.value.replace(/\D/g, '');
+
         const userFromApi = await api.post('/user',{
             usuario: inputUser.current.value,
             senha: inputSenha.current.value,
             nome: inputNome.current.value,
             idade: inputIdade.current.value,
-            cpf: inputCPF.current.value,
-            telefone: inputTelefone.current.value,
+            cpf: cpfLimpo,
+            telefone: telefoneLimpo,
             email: inputEmail.current.value
         })//Envia para api
-
+  
         toast.success('Cadastro realizado com sucesso')
 
+  
         if (inputUser.current) inputUser.current.value = '';
         if (inputSenha.current) inputSenha.current.value = '';
         if (inputSenhaConfirm.current) inputSenhaConfirm.current.value = '';
@@ -132,6 +144,10 @@ function Cadastrar() {
         if (inputTelefone.current) inputTelefone.current.value = '';
         if (inputEmail.current) inputEmail.current.value = '';
     }
+    } catch (error) {
+      toast.error(`Erro ao cadastrar${error}`)
+    }
+
     testApi() 
 }
 

@@ -6,7 +6,7 @@ import '../../css/global.css'
 import Imagedelet from "../../assets/delete.svg"
 import Imageupdate from "../../assets/edit.svg"
 import Imagelupa from "../../assets/search.svg"
-import Imageback from "../../assets/back.svg"
+import Imageback from "../../assets/out.svg"
 import api from '../../services/api'
 
 
@@ -27,6 +27,7 @@ function HomeAdm(){
    }
 
   async function getUsers(){
+
     const userFromApi = await api.get('/users')//puxa da api
     setUsers(userFromApi.data)//adicionar automaticamente na tela
     setFilteredUsers(userFromApi.data)
@@ -78,7 +79,7 @@ function HomeAdm(){
       if(localStorage.getItem('token') == null || localStorage.getItem('isAdmin') === 'false'){
         navigate('/login');
       }
-
+      
        localStorage.setItem('pageUpdate', 'usersAdm');
     testApi()
     
@@ -92,11 +93,10 @@ function HomeAdm(){
    async function goToBack() {
     navigate(`/`);
   }
-
-
+  
   useEffect(()=>{
-    getUsers()
     iniciar()
+    getUsers()
   }, [])//executa a função quando carrega a tela
 
   return(
