@@ -16,7 +16,7 @@ function Login() {
     async function eye() {
         const senhaInput = document.getElementById('senha');
         const eyeImg = document.querySelector('.imgeye');
-
+        
         if (senhaInput.type === 'password') {
             senhaInput.type = 'text';
             eyeImg.src = ImageEyeOpen; 
@@ -45,6 +45,10 @@ function Login() {
                     usuario: inputUser.current.value,
                     senha: inputSenha.current.value,
                 })//Envia para api
+
+                if(!userFromApi){
+                    console.log("usuario e senha enviados")
+                }
 
 
                 if(userFromApi.data.token){
