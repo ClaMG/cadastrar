@@ -12,6 +12,8 @@ function AtualizarSenha() {
 
   const inputUpSenha = useRef()
   const inputUpSenhaConfirm = useRef()
+  
+
   const navigate = useNavigate()
 
     async function testApi() {
@@ -52,43 +54,56 @@ function AtualizarSenha() {
 
   async function putSenha() {
 
-    if (!inputUpSenha.current.value || !inputUpSenhaConfirm.current.value) {
-      toast.error('Preencha todos os campos')
-    }else if(inputUpSenha.current.value !== inputUpSenhaConfirm.current.value){
-       toast.error('Senha não foi confirmada corretamente')
-    }
-    else{
+        if (!inputUpSenha || !inputUpSenhaConfirm) {
+            toast.error('Preencha todos os campos');
+        }
+
+        
+
         const id = localStorage.getItem('idCode');
-        const userFromApiGet = await api.get(`/user/${id}`) 
-      try {
-        const userFromApi = await api.put('/user',{
-          id: id,
-          usuario: userFromApiGet.data.usuario,
-          senha: inputUpSenha.current.value,
-          nome: userFromApiGet.data.nome,
-          idade: userFromApiGet.data.idade,
-          cpf: userFromApiGet.data.cpf,
-          telefone: userFromApiGet.data.telefone,
-          email: userFromApiGet.data.email
-        })//Envia para api
+        if (!id) {
+            toast.error('ID do usuário não encontrado.');
+            return;
+        }
 
-        toast.success('Atualização de sanha realizada com sucesso')
+        try {
+            // ❌ REMOVIDO: await api.get(`/user/${id}`) 
+            
+            // ✅ NOVO: Chamada PATCH direta, enviando apenas o ID e a nova senha
+            await api.patch(`/password`, {
+                id: id,
+                senha: inputUpSenha, // Envia APENAS o que precisa ser atualizado
+            });
 
-        setTimeout(() => {
-           navigate('/login')
-        }, 1000);
-      } catch (error) {
-        toast.error('Erro ao atualizar senha')
-      }
-    } 
-    testApi()
+            toast.success('Atualização de senha realizada com sucesso');
+
+            setTimeout(() => {
+                navigate('/login');
+            }, 1000);
+            
+        } catch (error) {
+            // Tratamento de erros, incluindo o 401 que você estava vendo
+            const errorMessage = error.response?.data?.message || 'Erro ao atualizar senha.';
+            toast.error(errorMessage);
+        }
+        
+        testApi()
+    }
+
+  async function iniciar() {
+  const token = localStorage.getItem('token');
+
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
+    }
 
   async function goToBack() {
     navigate(`/recuperar`);
 }
 
 useEffect(()=>{
+  iniciar()
       testApi()
   }, [])//executa a função quando carrega a tela
 

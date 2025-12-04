@@ -37,6 +37,8 @@ function EnviarEmail() {
                 
                 if (inputEmail.current) inputEmail.current.value = '';
                 if (inputUser.current) inputUser.current.value = '';
+
+                localStorage.setItem('token', userFromApi.data.token);//Salva o token no local storage
                 
                 
                 toast.update(toastId, { 

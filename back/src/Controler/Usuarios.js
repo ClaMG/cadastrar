@@ -362,6 +362,15 @@ export async function codigo(req, res) {
     const code = gerarcodigo(6); 
     const expiresAt = Date.now() + time;
     
+    if (!secretKey) {
+        console.error('JWT_SECRET not defined in .env');
+        return res.status(500).json({message: 'Erro interno do servidor' });
+    }
+
+    const payload = {id: user.id};
+
+    const token = jwt.sign(payload, secretKey, {expiresIn: '1h'});//cria o token
+
     try {
         const userId = user.id
         await saveCode(user.id, code, expiresAt);
@@ -385,7 +394,8 @@ export async function codigo(req, res) {
         return res.json({
             "userId": user.id,
             "statuscode": 200,
-            message: "Email enviado com sucesso"
+            message: "Email enviado com sucesso",
+            token: token
         });
 
     }catch(err){
@@ -442,4 +452,34 @@ export async function confirmarCodigo(req, res) {
             });
     }
         
+}
+
+export async function updatePassword(req, res) {
+    const { id, senha } = req.body;
+    
+    try {
+       
+        if (!id || !senha) {
+            return res.status(400).json({ message: 'ID do usuário e a nova senha são obrigatórios.' });
+        }
+        
+        const hashedPassword = await bcrypt.hash(senha, saltRounds);
+
+        const db = await openDb();
+        
+        const result = await db.run('UPDATE Usuarios SET senha = ? WHERE id = ?', [hashedPassword, id]);
+        
+        if (result.changes === 0) {
+            return res.status(404).json({ message: 'Usuário não encontrado ou não houve alteração.' });
+        }
+
+        return res.json({ 
+            "statuscode": 200, 
+            "message": "Senha atualizada com sucesso." 
+        });
+
+    } catch (err) {
+        console.error("Erro ao atualizar senha:", err.message);
+        return res.status(500).json({ message: "Erro interno do servidor ao atualizar senha." });
+    }
 }
