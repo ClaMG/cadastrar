@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer'
 import crypto from 'node:crypto'
-const secretKey = process.env.JWT_SECRET || "gudUMKvWUayk9wWgVeB9/xvnd1zfvWxXfm07MurfmX1G15bPcTmc";
+const secretKey = process.env.JWT_SECRET || "Senha";
 const saltRounds = 10;
 
 //email
@@ -420,7 +420,7 @@ export async function confirmarCodigo(req, res) {
             });
         }
 
-        if (codeconfirm === savedCode) {
+        if (codeconfirm == savedCode) {
             await deletCode(userid); 
             return res.json({
                 "statuscode": 200,
