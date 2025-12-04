@@ -67,9 +67,6 @@ function AtualizarSenha() {
         }
 
         try {
-            // ❌ REMOVIDO: await api.get(`/user/${id}`) 
-            
-            // ✅ NOVO: Chamada PATCH direta, enviando apenas o ID e a nova senha
             await api.patch(`/password`, {
                 id: id,
                 senha: inputUpSenha, // Envia APENAS o que precisa ser atualizado
